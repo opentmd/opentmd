@@ -2,12 +2,12 @@
 # opentmd-cli 一键安装脚本
 #
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd/master/scripts/install.sh | bash
 #   或本地: ./scripts/install.sh
 #
 # 环境变量:
 #   OPENTMD_VERSION   版本号 (default: latest)
-#   OPENTMD_REPO      GitHub 仓库 (default: opentmd/opentmd-cli)
+#   OPENTMD_REPO      GitHub 仓库 (default: opentmd/opentmd)
 #   OPENTMD_INSTALL_DIR  安装目录 (auto: /usr/local/bin 或 ~/.local/bin)
 
 set -eu
@@ -20,7 +20,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/mirror-env.sh"
 
 OPENTMD_VERSION="${OPENTMD_VERSION:-latest}"
-OPENTMD_REPO="${OPENTMD_REPO:-opentmd/opentmd-cli}"
+OPENTMD_REPO="${OPENTMD_REPO:-opentmd/opentmd}"
 BINARY_NAME="opentmd"
 
 log() { printf '==> %s\n' "$*"; }

@@ -10,7 +10,7 @@ AI 编程助手
 ```bash
 ./scripts/install.sh
 # 或
-curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd/master/scripts/install.sh | bash
 ```
 
 ### 配置与运行

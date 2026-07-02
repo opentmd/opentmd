@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/opentmd/opentmd-cli/internal/llm"
+	"github.com/opentmd/opentmd/internal/llm"
 )
 
 type RetryPolicy struct {

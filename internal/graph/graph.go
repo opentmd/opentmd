@@ -12,8 +12,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/opentmd/opentmd-cli/internal/pathutil"
-	"github.com/opentmd/opentmd-cli/internal/project"
+	"github.com/opentmd/opentmd/internal/pathutil"
+	"github.com/opentmd/opentmd/internal/project"
 )
 
 type Symbol struct {

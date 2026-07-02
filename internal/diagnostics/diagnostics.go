@@ -3,8 +3,8 @@ package diagnostics
 import (
 	"context"
 
-	"github.com/opentmd/opentmd-cli/internal/config"
-	"github.com/opentmd/opentmd-cli/internal/lsp"
+	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd/internal/lsp"
 )
 
 // Collector wraps the LSP manager for the diagnostics tool.

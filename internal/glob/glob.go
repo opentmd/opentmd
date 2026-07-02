@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/pathutil"
+	"github.com/opentmd/opentmd/internal/pathutil"
 )
 
 type Options struct {

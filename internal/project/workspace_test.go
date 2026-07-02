@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/opentmd/opentmd-cli/internal/config"
-	"github.com/opentmd/opentmd-cli/internal/project"
+	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd/internal/project"
 )
 
 func TestInitWorkspacePersistsDefaultWorkdir(t *testing.T) {

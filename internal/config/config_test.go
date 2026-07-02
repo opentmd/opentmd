@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/opentmd/opentmd-cli/internal/config"
+	"github.com/opentmd/opentmd/internal/config"
 )
 
 func TestEnsureCreatesLayout(t *testing.T) {

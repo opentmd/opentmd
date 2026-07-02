@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    name: Build & Publish
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: linux
+            goarch: arm64
+          - goos: darwin
+            goarch: amd64
+          - goos: darwin
+            goarch: arm64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          check-latest: true
+
+      - name: Build binary
+        run: |
+          BINARY="opentmd"
+          ARCHIVE="${BINARY}_${{ matrix.goos }}_${{ matrix.goarch }}.tar.gz"
+          mkdir -p dist
+          CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+            go build -trimpath -ldflags "-s -w" -o "dist/${BINARY}" ./cmd/opentmd/
+          cd dist
+          tar -czf "${ARCHIVE}" "${BINARY}"
+          rm -f "${BINARY}"
+          sha256sum "${ARCHIVE}" > "${ARCHIVE}.sha256"
+          echo "archive=${ARCHIVE}" >> "$GITHUB_ENV"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/*.tar.gz*
+
+  create-release:
+    name: Create Release
+    needs: goreleaser
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate release notes
+        id: changelog
+        run: |
+          # Generate changelog from git log
+          PREV_TAG=$(git tag --sort=-version:refname | head -n 2 | tail -n 1 || true)
+          if [ -n "$PREV_TAG" ]; then
+            NOTES=$(git log --pretty=format:"* %s (%h)" "$PREV_TAG..HEAD" 2>/dev/null || echo "Initial release")
+          else
+            NOTES="* Initial release"
+          fi
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          echo "$NOTES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "tag=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          name: OpenTMD ${{ steps.changelog.outputs.tag }}
+          body: |
+            ## OpenTMD ${{ steps.changelog.outputs.tag }}
+
+            ### 下载
+
+            | 平台 | 架构 | 下载 |
+            |------|------|------|
+            | Linux | amd64 | [opentmd_linux_amd64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_linux_amd64.tar.gz) |
+            | Linux | arm64 | [opentmd_linux_arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_linux_arm64.tar.gz) |
+            | macOS | amd64 | [opentmd_darwin_amd64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_darwin_amd64.tar.gz) |
+            | macOS | arm64 | [opentmd_darwin_arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_darwin_arm64.tar.gz) |
+
+            ### 安装
+
+            ```bash
+            curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/master/scripts/install.sh | bash
+            ```
+
+            ### Changes
+
+            ${{ steps.changelog.outputs.notes }}
+          files: artifacts/*/*.tar.gz*

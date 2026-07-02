@@ -11,7 +11,7 @@
 ### 方式一：远程安装（推荐）
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd/master/scripts/install.sh | bash
 ```
 
 安装到 `/usr/local/bin` 或 `~/.local/bin`。
@@ -44,7 +44,7 @@ go build -o ~/.local/bin/opentmd ./cmd/opentmd/
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
 | `OPENTMD_VERSION` | 安装版本 | latest |
-| `OPENTMD_REPO` | GitHub 仓库 | opentmd/opentmd-cli |
+| `OPENTMD_REPO` | GitHub 仓库 | opentmd/opentmd |
 | `OPENTMD_INSTALL_DIR` | 安装目录 | 自动检测 |
 
 ## 下一步

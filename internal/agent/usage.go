@@ -1,6 +1,6 @@
 package agent
 
-import "github.com/opentmd/opentmd-cli/internal/llm"
+import "github.com/opentmd/opentmd/internal/llm"
 
 type UsageStats struct {
 	PromptTokens     int

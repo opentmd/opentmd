@@ -10,14 +10,14 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/opentmd/opentmd-cli/internal/agent"
-	"github.com/opentmd/opentmd-cli/internal/config"
-	"github.com/opentmd/opentmd-cli/internal/filehistory"
-	"github.com/opentmd/opentmd-cli/internal/llm"
-	"github.com/opentmd/opentmd-cli/internal/lsp"
-	"github.com/opentmd/opentmd-cli/internal/permission"
-	"github.com/opentmd/opentmd-cli/internal/pricing"
-	"github.com/opentmd/opentmd-cli/internal/trust"
+	"github.com/opentmd/opentmd/internal/agent"
+	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd/internal/filehistory"
+	"github.com/opentmd/opentmd/internal/llm"
+	"github.com/opentmd/opentmd/internal/lsp"
+	"github.com/opentmd/opentmd/internal/permission"
+	"github.com/opentmd/opentmd/internal/pricing"
+	"github.com/opentmd/opentmd/internal/trust"
 )
 
 type chunkMsg struct {

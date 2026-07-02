@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/opentmd/opentmd-cli/internal/project"
+	"github.com/opentmd/opentmd/internal/project"
 )
 
 func TestEnsureCreatesProjectLayout(t *testing.T) {

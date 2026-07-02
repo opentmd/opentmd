@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/project"
+	"github.com/opentmd/opentmd/internal/project"
 )
 
 func buildSystemPrompt(workDir, skillsPrompt string, memoryPrompt string, planMode bool) string {

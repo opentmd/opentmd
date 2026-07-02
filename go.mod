@@ -1,4 +1,4 @@
-module github.com/opentmd/opentmd-cli
+module github.com/opentmd/opentmd
 
 go 1.22.0
 

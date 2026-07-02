@@ -5,7 +5,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/opentmd/opentmd-cli/internal/compaction"
+	"github.com/opentmd/opentmd/internal/compaction"
 )
 
 // Compact summarizes older session messages to reduce context size.

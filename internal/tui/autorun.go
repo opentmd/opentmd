@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/permission"
+	"github.com/opentmd/opentmd/internal/permission"
 )
 
 func (m *Model) handleAutoRun(args []string) {

@@ -8,12 +8,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/fileio"
-	"github.com/opentmd/opentmd-cli/internal/glob"
-	"github.com/opentmd/opentmd-cli/internal/grep"
-	"github.com/opentmd/opentmd-cli/internal/llm"
-	"github.com/opentmd/opentmd-cli/internal/pathutil"
-	"github.com/opentmd/opentmd-cli/internal/shell"
+	"github.com/opentmd/opentmd/internal/fileio"
+	"github.com/opentmd/opentmd/internal/glob"
+	"github.com/opentmd/opentmd/internal/grep"
+	"github.com/opentmd/opentmd/internal/llm"
+	"github.com/opentmd/opentmd/internal/pathutil"
+	"github.com/opentmd/opentmd/internal/shell"
 )
 
 type Handler func(ctx context.Context, args json.RawMessage) (string, error)

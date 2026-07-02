@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/config"
-	"github.com/opentmd/opentmd-cli/internal/diagnostics"
-	"github.com/opentmd/opentmd-cli/internal/filehistory"
-	"github.com/opentmd/opentmd-cli/internal/graph"
-	"github.com/opentmd/opentmd-cli/internal/hook"
-	"github.com/opentmd/opentmd-cli/internal/llm"
-	"github.com/opentmd/opentmd-cli/internal/lsp"
-	"github.com/opentmd/opentmd-cli/internal/mcp"
-	"github.com/opentmd/opentmd-cli/internal/permission"
-	"github.com/opentmd/opentmd-cli/internal/skill"
+	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd/internal/diagnostics"
+	"github.com/opentmd/opentmd/internal/filehistory"
+	"github.com/opentmd/opentmd/internal/graph"
+	"github.com/opentmd/opentmd/internal/hook"
+	"github.com/opentmd/opentmd/internal/llm"
+	"github.com/opentmd/opentmd/internal/lsp"
+	"github.com/opentmd/opentmd/internal/mcp"
+	"github.com/opentmd/opentmd/internal/permission"
+	"github.com/opentmd/opentmd/internal/skill"
 )
 
 type Options struct {

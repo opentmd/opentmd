@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/config"
-	"github.com/opentmd/opentmd-cli/internal/mcp"
+	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd/internal/mcp"
 	"github.com/spf13/cobra"
 )
 

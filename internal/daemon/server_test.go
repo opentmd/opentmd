@@ -3,7 +3,7 @@ package daemon
 import (
 	"testing"
 
-	"github.com/opentmd/opentmd-cli/internal/permission"
+	"github.com/opentmd/opentmd/internal/permission"
 )
 
 func TestParseDecision(t *testing.T) {

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/opentmd/opentmd-cli/internal/llm"
-	"github.com/opentmd/opentmd-cli/internal/session"
+	"github.com/opentmd/opentmd/internal/llm"
+	"github.com/opentmd/opentmd/internal/session"
 )
 
 const (

@@ -2,7 +2,7 @@
 # opentmd-cli 卸载脚本
 #
 # 用法:
-#   curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/uninstall.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd/master/scripts/uninstall.sh | bash
 #   或本地: ./scripts/uninstall.sh
 #
 # 环境变量:

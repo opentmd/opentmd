@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/opentmd/opentmd-cli/internal/config"
+	"github.com/opentmd/opentmd/internal/config"
 )
 
 const maxVersionsPerFile = 50
