@@ -20,7 +20,7 @@ import (
 )
 
 const DefaultPort = 13456
-const Version = "0.1.0"
+const Version = "0.1.2"
 
 type Server struct {
 	cfg      *config.Config

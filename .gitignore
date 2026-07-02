@@ -1,7 +1,10 @@
 # ── Go ──────────────────────────────────────────────
 /bin/
+/temp/
 /vendor/
-/opentmd
+/.opentmd/
+/.atomcode/
+/node_modules/
 
 *.exe
 *.exe~
@@ -55,3 +58,5 @@ mock/
 # Docs site build output
 docs/site/node_modules/
 docs/site/dist/
+.opentmd.md
+.atomcode/
