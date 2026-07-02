@@ -21,7 +21,7 @@ git push origin v0.1.1
 |------|------|------|
 | `NPM_TOKEN` | **Secret** | npm automation token（需 bypass 2FA 权限） |
 
-> 请使用 Secret 而非普通 Variable，避免 token 泄露。
+> 必须是 **Secret**，不能是 Environment Variable；日志中 `NODE_AUTH_TOKEN` 显示为空是正常的（GitHub 会脱敏）。
 
 ## GitHub Release（手动）
 

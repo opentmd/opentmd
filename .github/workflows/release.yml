@@ -152,6 +152,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           OPENTMD_REPO: ${{ github.repository }}
         run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "::error::NPM_TOKEN is empty. Add it as a Secret (not Variable) in Environment 'Configure NPM'."
+            exit 1
+          fi
           VERSION="${GITHUB_REF_NAME#v}"
           echo "Publishing npm packages for version ${VERSION}"
-          ./packages/npm/scripts/build.sh "${VERSION}"
+          bash ./packages/npm/scripts/build.sh "${VERSION}"
