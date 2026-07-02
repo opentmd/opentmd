@@ -193,12 +193,7 @@ func (m *Model) buildWelcome() string {
 	)
 }
 
-func truncatePath(path string, maxLen int) string {
-	if len(path) <= maxLen {
-		return path
-	}
-	return sym.Ellipsis + path[len(path)-maxLen+len(sym.Ellipsis):]
-}
+
 
 func max(a, b int) int {
 	if a > b {

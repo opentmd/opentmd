@@ -7,7 +7,6 @@ import (
 	"unicode/utf8"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/charmbracelet/x/ansi"
 	"github.com/mattn/go-runewidth"
 
 	"github.com/opentmd/opentmd-cli/internal/permission"
@@ -219,7 +218,7 @@ func (m *Model) renderUserEcho(text string, width int) string {
 }
 
 func (m *Model) renderAssistant(text string, width int, markdown bool) string {
-	wrapped := text
+	var wrapped string
 	if markdown {
 		wrapped = renderMarkdownLite(text, width, m.styles)
 	} else {
@@ -300,34 +299,6 @@ func (m *Model) renderSystem(text string, contentWidth int) string {
 	default:
 		return m.styles.system.Render(wrapped)
 	}
-}
-
-func (m *Model) renderBubble(label, text string, width int, style lipgloss.Style, markdown bool) string {
-	labelTag := m.styles.subtitle.Render(" " + label + " ")
-	prefixWidth := runewidth.StringWidth(ansi.Strip(labelTag)) + 1
-	bodyWidth := width - prefixWidth - 2
-	if bodyWidth < 10 {
-		bodyWidth = 10
-	}
-	var wrapped string
-	if markdown {
-		wrapped = renderMarkdownLite(text, bodyWidth, m.styles)
-	} else {
-		wrapped = wrapPlainText(text, bodyWidth)
-	}
-	lines := strings.Split(wrapped, "\n")
-	var out strings.Builder
-	for i, line := range lines {
-		if i == 0 {
-			out.WriteString(style.Render(labelTag + line))
-		} else {
-			out.WriteString(style.Render(strings.Repeat(" ", prefixWidth) + line))
-		}
-		if i < len(lines)-1 {
-			out.WriteByte('\n')
-		}
-	}
-	return out.String()
 }
 
 func (m *Model) appendMsg(kind, text string) {

@@ -36,7 +36,14 @@ func TestInitWorkspacePersistsDefaultWorkdir(t *testing.T) {
 
 func TestResolveWorkDirUsesCWD(t *testing.T) {
 	dir := t.TempDir()
-	t.Chdir(dir)
+	prev, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(dir); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chdir(prev) })
 
 	got, err := project.ResolveWorkDir("")
 	if err != nil {
@@ -54,7 +61,14 @@ func TestResolveWorkDirOverride(t *testing.T) {
 	if err := os.MkdirAll(sub, 0o755); err != nil {
 		t.Fatal(err)
 	}
-	t.Chdir(base)
+	prev, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Chdir(base); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.Chdir(prev) })
 
 	got, err := project.ResolveWorkDir(sub)
 	if err != nil {

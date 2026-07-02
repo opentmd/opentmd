@@ -169,7 +169,6 @@ func (a *Agent) runLoop(ctx context.Context, messages []llm.Message, onChunk Str
 				var execErr error
 				if blocked, msg := guard.check(tc.Name, tc.Arguments); blocked {
 					result = msg
-					execErr = fmt.Errorf("loop guard")
 				} else {
 					result, execErr = a.tools.Execute(ctx, tc)
 					if execErr != nil {

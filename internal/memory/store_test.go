@@ -144,9 +144,15 @@ func TestMergedForPromptWithEntries(t *testing.T) {
 func TestFindMatching(t *testing.T) {
 	dir := t.TempDir()
 	store := New(filepath.Join(dir, "memory.md"))
-	store.Append("use tabs for indentation")
-	store.Append("prefer spaces")
-	store.Append("pnpm for packages")
+	if err := store.Append("use tabs for indentation"); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Append("prefer spaces"); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Append("pnpm for packages"); err != nil {
+		t.Fatal(err)
+	}
 
 	matches := store.FindMatching("tabs")
 	if len(matches) != 1 || matches[0] != "use tabs for indentation" {

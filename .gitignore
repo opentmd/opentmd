@@ -1,6 +1,8 @@
 # ── Go ──────────────────────────────────────────────
 /bin/
 /temp/
+/dist/
+/build/
 /vendor/
 /.opentmd/
 /.atomcode/

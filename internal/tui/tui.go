@@ -534,7 +534,7 @@ func (m *Model) handleSlash(input string) (tea.Model, tea.Cmd) {
 		cfg := m.agent.Config()
 		cost := pricing.EstimateCost(cfg.Default.Provider, cfg.Default.Model, u.PromptTokens, u.CompletionTokens)
 		m.appendSystem(strings.Join([]string{
-			fmt.Sprintf("Token 用量（当前 session）:"),
+			"Token 用量（当前 session）:",
 			fmt.Sprintf("  输入:   %d", u.PromptTokens),
 			fmt.Sprintf("  输出:   %d", u.CompletionTokens),
 			fmt.Sprintf("  合计:   %d", u.TotalTokens),
