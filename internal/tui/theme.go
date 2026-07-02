@@ -21,7 +21,7 @@ type Theme struct {
 	ReverseBG  lipgloss.Color
 }
 
-const appVersion = "0.1.5"
+const appVersion = "0.1.6"
 
 func loadTheme(name string) Theme {
 	if name == "light" {

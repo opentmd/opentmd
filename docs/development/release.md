@@ -15,13 +15,18 @@ git push origin v0.1.1
 
 ### GitHub 环境配置
 
-在 **Settings → Environments → Configure NPM** 中添加：
+在 **Settings → Environments → Configure NPM** 中：
 
-| 名称 | 类型 | 说明 |
-|------|------|------|
-| `NPM_TOKEN` | **Secret** | npm automation token（需 bypass 2FA 权限） |
+| 项 | 配置 |
+|----|------|
+| **Environment secrets** | 名称 `NPM_TOKEN`，值为 npm automation token（bypass 2FA） |
+| **Deployment branches and tags** | 选 **No restriction**，或添加 tag 规则 `v*` |
 
-> 必须是 **Secret**，不能是 Environment Variable；日志中 `NODE_AUTH_TOKEN` 显示为空是正常的（GitHub 会脱敏）。
+> 常见失败原因：secret 已添加，但 **Deployment branches and tags** 仅允许 `main` 等分支，**tag 发布（`v0.1.4`）无法读取 environment secrets**，表现为 `NPM_TOKEN is empty`。
+
+备选：在 **Settings → Secrets and variables → Actions → Repository secrets** 添加同名 `NPM_TOKEN`（不依赖 environment 分支规则，推荐与 environment secret 二选一或同时配置）。
+
+> 日志里 token 显示为空是正常的（GitHub 脱敏）。
 
 ## GitHub Release（手动）
 

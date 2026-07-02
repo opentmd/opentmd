@@ -141,6 +141,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Resolve NPM token
+        env:
+          NPM_TOKEN_SECRET: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN_VAR: ${{ vars.NPM_TOKEN }}
+        run: |
+          if [ -n "${NPM_TOKEN_SECRET}" ]; then
+            echo "NODE_AUTH_TOKEN=${NPM_TOKEN_SECRET}" >> "${GITHUB_ENV}"
+            echo "NPM token loaded from environment/repository secret"
+          elif [ -n "${NPM_TOKEN_VAR}" ]; then
+            echo "::warning::NPM_TOKEN is an Environment Variable. Move it to Environment secrets when possible."
+            echo "NODE_AUTH_TOKEN=${NPM_TOKEN_VAR}" >> "${GITHUB_ENV}"
+            echo "NPM token loaded from environment variable"
+          else
+            echo "::error::NPM_TOKEN is missing."
+            echo "::error::1) Settings → Environments → Configure NPM → Environment secrets → NPM_TOKEN"
+            echo "::error::2) Or Settings → Secrets and variables → Actions → Repository secrets → NPM_TOKEN"
+            echo "::error::3) If secret exists but is still empty, open Configure NPM → Deployment branches and tags"
+            echo "::error::   set to 'No restriction' or add tag pattern: v*"
+            exit 1
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -149,13 +170,8 @@ jobs:
 
       - name: Publish @opentmd/cli packages
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           OPENTMD_REPO: ${{ github.repository }}
         run: |
-          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
-            echo "::error::NPM_TOKEN is empty. Add it as a Secret (not Variable) in Environment 'Configure NPM'."
-            exit 1
-          fi
           VERSION="${GITHUB_REF_NAME#v}"
           echo "Publishing npm packages for version ${VERSION}"
           bash ./packages/npm/scripts/build.sh "${VERSION}"
