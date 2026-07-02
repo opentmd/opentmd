@@ -50,6 +50,9 @@ Thumbs.db
 !.opentmd/local/.gitkeep
 .opentmd/graph.gob
 
-# AtomCode local-scope configs (machine-specific)
-.atomcode/local/
-mock/atomcode
+# Mock
+mock/
+
+# Docs site build output
+docs/site/node_modules/
+docs/site/dist/

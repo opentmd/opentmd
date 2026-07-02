@@ -7,7 +7,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 type modalKind int

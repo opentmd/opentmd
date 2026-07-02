@@ -120,3 +120,14 @@ opentmd login --oauth             # OAuth（即将上线）
 | `lsp.auto_detect` | 自动检测语言服务器 | true |
 | `lsp.diagnostics_settle_delay_ms` | 诊断 settle 延迟 (ms) | 300 |
 | `lsp.warmup_file_limit` | 项目预热文件数 | 40 |
+
+## 环境变量
+
+| 变量 | 说明 |
+|------|------|
+| `OPENTMD_NO_ALT_SCREEN` | 设为 `1` 禁用 TUI 备用屏幕（便于终端内选中复制） |
+| `DEEPSEEK_API_KEY` 等 | 部分 Provider 支持从环境变量读取 API Key |
+
+## 数据目录
+
+`~/.opentmd/` 结构见 [项目结构 — 配置与数据目录](../development/project-structure.md#配置与数据目录)。

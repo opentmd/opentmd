@@ -3,7 +3,7 @@ package deepseek_test
 import (
 	"testing"
 
-	"github.com/opentmd/opentmd/internal/deepseek"
+	"github.com/opentmd/opentmd-cli/internal/deepseek"
 )
 
 func TestParseSSEDataContent(t *testing.T) {

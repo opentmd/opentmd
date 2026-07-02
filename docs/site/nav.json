@@ -1,0 +1,53 @@
+{
+  "siteName": "OpenTMD",
+  "tagline": "开源终端 AI 编码助手",
+  "repoUrl": "https://github.com/opentmd/opentmd-cli",
+  "groups": [
+    {
+      "id": "guide",
+      "title": "用户指南",
+      "items": [
+        { "slug": "index", "title": "文档首页", "src": "README.md", "description": "OpenTMD 文档中心与快速导航" },
+        { "slug": "installation", "title": "安装指南", "src": "user-guide/installation.md" },
+        { "slug": "uninstall", "title": "卸载指南", "src": "user-guide/uninstall.md" },
+        { "slug": "usage", "title": "使用指南", "src": "user-guide/usage.md" },
+        { "slug": "commands", "title": "命令参考", "src": "user-guide/commands.md" },
+        { "slug": "configuration", "title": "配置指南", "src": "user-guide/configuration.md" }
+      ]
+    },
+    {
+      "id": "architecture",
+      "title": "架构设计",
+      "items": [
+        { "slug": "overview", "title": "架构概览", "src": "architecture/overview.md" },
+        { "slug": "agent", "title": "Agent 编排", "src": "architecture/agent.md" },
+        { "slug": "config", "title": "配置系统", "src": "architecture/config.md" },
+        { "slug": "provider", "title": "Provider", "src": "architecture/provider.md" },
+        { "slug": "tools", "title": "工具系统", "src": "architecture/tools.md" },
+        { "slug": "tui", "title": "TUI 界面", "src": "architecture/tui.md" },
+        { "slug": "session", "title": "会话管理", "src": "architecture/session.md" },
+        { "slug": "memory", "title": "持久记忆", "src": "architecture/memory.md" },
+        { "slug": "compaction", "title": "对话压缩", "src": "architecture/compaction.md" },
+        { "slug": "hooks", "title": "Hooks", "src": "architecture/hooks.md" },
+        { "slug": "permission", "title": "权限模型", "src": "architecture/permission.md" },
+        { "slug": "mcp", "title": "MCP", "src": "architecture/mcp.md" },
+        { "slug": "lsp", "title": "LSP", "src": "architecture/lsp.md" },
+        { "slug": "daemon", "title": "Daemon", "src": "architecture/daemon.md" },
+        { "slug": "semantic", "title": "语义分析", "src": "architecture/semantic.md" },
+        { "slug": "shell-exec", "title": "Shell 执行", "src": "architecture/shell-exec.md" },
+        { "slug": "fileio", "title": "文件 I/O", "src": "architecture/fileio.md" },
+        { "slug": "setup-wizard", "title": "设置向导", "src": "architecture/setup-wizard.md" }
+      ]
+    },
+    {
+      "id": "development",
+      "title": "开发指南",
+      "items": [
+        { "slug": "project-structure", "title": "项目结构", "src": "development/project-structure.md" },
+        { "slug": "build", "title": "构建指南", "src": "development/build.md" },
+        { "slug": "release", "title": "发布指南", "src": "development/release.md" },
+        { "slug": "testing", "title": "测试指南", "src": "development/testing.md" }
+      ]
+    }
+  ]
+}

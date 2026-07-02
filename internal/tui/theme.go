@@ -2,7 +2,7 @@ package tui
 
 import "github.com/charmbracelet/lipgloss"
 
-// Palette follows AtomCode's 16-color SGR strategy for terminal theme adaptability.
+// Palette uses 16-color SGR strategy for terminal theme adaptability.
 type Theme struct {
 	Name       string
 	Primary    lipgloss.Color // brand — magenta

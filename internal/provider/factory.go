@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/opentmd/opentmd/internal/cliname"
-	"github.com/opentmd/opentmd/internal/config"
-	"github.com/opentmd/opentmd/internal/deepseek"
-	"github.com/opentmd/opentmd/internal/llm"
+	"github.com/opentmd/opentmd-cli/internal/cliname"
+	"github.com/opentmd/opentmd-cli/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/deepseek"
+	"github.com/opentmd/opentmd-cli/internal/llm"
 )
 
 func New(cfg *config.Config) (llm.Provider, error) {

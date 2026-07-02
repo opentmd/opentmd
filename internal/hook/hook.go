@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 type Event string

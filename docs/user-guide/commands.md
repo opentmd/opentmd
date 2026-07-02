@@ -11,7 +11,16 @@ opentmd [command]
 
 | 标志 | 缩写 | 说明 |
 |------|------|------|
-| `--prompt` | `-p` | Prompt 模式（非交互） |
+| `--prompt` | `-p` | Headless 模式（非交互，输出到 stdout） |
+| `--prompt-file` | | 从文件读取 prompt |
+| `--dir` | `-C` | 工作目录 |
+| `--continue` | `-c` | 继续最近 session |
+| `--verbose` | `-v` | 工具调用详情输出到 stderr |
+| `--model` | | 临时覆盖模型 |
+| `--provider` | | 临时覆盖 Provider |
+| `--trust` | | 信任当前工作目录（跳过确认） |
+| `--version` | | 显示版本号 |
+| `--help` | `-h` | 显示帮助 |
 
 ## 子命令
 
@@ -20,36 +29,32 @@ opentmd [command]
 配置 Provider API Key。
 
 ```bash
-opentmd login                         # 交互式选择 Provider
-opentmd login --provider deepseek     # 直接指定 Provider
-opentmd login --oauth                 # OAuth 登录（即将上线）
+opentmd login
+opentmd login --provider deepseek
+opentmd login --oauth          # OAuth 登录（即将上线）
 ```
-
-| 标志 | 说明 |
-|------|------|
-| `--provider` | Provider 名称 (deepseek, openai, claude, glm, qwen, ollama) |
-| `--oauth` | 使用 OpenTMD OAuth |
 
 ### `opentmd config`
 
-显示当前配置信息。
+显示当前配置摘要（provider、model、LSP、API Key 掩码等）。
 
 ```bash
 opentmd config
 ```
 
-输出示例：
-```
-Config file: /home/user/.opentmd/config.toml
+### `opentmd mcp`
 
-  provider: deepseek
-  model:    deepseek-chat
-  ...
+管理 MCP 服务器配置（`~/.opentmd/mcp.json`）。
+
+```bash
+opentmd mcp list
+opentmd mcp show
+opentmd mcp add myserver --command npx --args @modelcontextprotocol/server-filesystem,/path
 ```
 
 ### `opentmd daemon`
 
-启动 HTTP 服务，供 VS Code 扩展等 IDE 集成使用。
+启动 HTTP 服务，供 VS Code 扩展等 IDE 集成使用（仅监听 loopback）。
 
 ```bash
 opentmd daemon --port 13456 -C ./my-project
@@ -61,13 +66,31 @@ opentmd daemon --port 13456 -C ./my-project
 | `/chat` | POST | SSE 聊天（`session_id`、`work_dir`） |
 | `/sessions` | GET | 列出历史 session |
 | `/sessions/new` | POST | 创建新 session |
-| `/config` | GET | 当前 provider/model/LSP 配置摘要 |
-| `/config/reload` | POST | 从磁盘重载 config.toml 并更新所有 session |
-| `/lsp/status` | GET | LSP 状态（JSON，含 `text` 可读摘要） |
-| `/lsp/reload` | POST | 重启所有活跃 session 的 LSP 客户端 |
-| `/mcp reload` | POST | 重连 MCP 服务器 |
-| `/mcp/status` | GET | MCP 服务器连接状态（JSON） |
-| `/permission/respond` | POST | 响应权限审批请求 |
+| `/config` | GET | 当前配置摘要 |
+| `/config/reload` | POST | 重载 config.toml |
+| `/lsp/status` | GET | LSP 状态（JSON） |
+| `/lsp/reload` | POST | 重启 LSP 客户端 |
+| `/mcp/status` | GET | MCP 服务器状态 |
+| `/mcp/reload` | POST | 重连 MCP 服务器 |
+| `/permission/respond` | POST | 响应权限审批 |
+
+SSE 事件：`session` · `text` · `tool_start` · `lsp_connect` · `permission_request` · `done` · `error`
+
+## TUI 斜杠命令
+
+完整列表见 [使用指南 — TUI 命令](usage.md#tui-斜杠命令)。
+
+常用：
+
+| 命令 | 说明 |
+|------|------|
+| `/help` | 显示全部命令 |
+| `/session list/new/<id>` | 会话管理 |
+| `/remember` `/forget` `/memory` | 持久记忆 |
+| `/compact [focus]` | LLM 摘要压缩旧对话 |
+| `/mcp reload` | 重连 MCP |
+| `/lsp` `/lsp reload` | LSP 状态与重启 |
+| `/copy` `/export` | 复制 / 导出会话 |
 
 ## 使用示例
 
@@ -75,21 +98,16 @@ opentmd daemon --port 13456 -C ./my-project
 # 交互模式
 cd my-project && opentmd
 
-# Prompt 模式
-opentmd -p "解释这段代码"
+# Headless
+opentmd -C ./my-project -p "运行 go test 并总结"
+opentmd --prompt-file task.txt -v
 
-# 配置 Provider
-opentmd login --provider openai
+# 继续上次对话
+opentmd -c
 
-# 查看配置
-opentmd config
-
-# 启动 Daemon（IDE 集成）
-opentmd daemon --port 13456 -C ./my-project
-curl -s http://127.0.0.1:13456/lsp/status | jq .
-
-# Prompt 模式 + 管道
-opentmd -p "检查代码风格问题" | tee report.txt
+# Daemon + API 探测
+opentmd daemon --port 13456 &
+curl -s http://127.0.0.1:13456/config | jq .
 ```
 
 ## 退出码

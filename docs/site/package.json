@@ -1,0 +1,13 @@
+{
+  "name": "@opentmd/docs-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "OpenTMD documentation site (GitHub Pages)",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "npx --yes serve dist -l 4173"
+  },
+  "devDependencies": {
+    "marked": "^15.0.6"
+  }
+}

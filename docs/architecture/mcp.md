@@ -44,5 +44,3 @@ opentmd mcp show myserver
 - `internal/mcp/client_stdio.go` — stdio 传输客户端
 - `internal/mcp/status.go` — 状态报告
 - `internal/tool/runtime.go:registerExtended()` — MCP 工具注册
-
-参考 AtomCode `docs/atomcode/crates/atomcode-capabilities/src/mcp/`。

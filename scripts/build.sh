@@ -99,7 +99,7 @@ build_cli() {
   log "go build"
   CGO_ENABLED=0 go build \
     -trimpath \
-    -ldflags "-s -w" \
+    -ldflags "-s -w -X main.Version=${VERSION}" \
     -o "$OUTPUT" \
     ./cmd/opentmd/
   log "done: ${OUTPUT}"
@@ -146,7 +146,7 @@ build_release() {
     log "  ${goos}/${goarch} → ${out}"
     CGO_ENABLED=0 GOOS="$goos" GOARCH="$goarch" go build \
       -trimpath \
-      -ldflags "-s -w" \
+      -ldflags "-s -w -X main.Version=${VERSION}" \
       -o "$out" \
       ./cmd/opentmd/
     chmod +x "$out"

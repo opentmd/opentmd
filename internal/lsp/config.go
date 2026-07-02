@@ -3,7 +3,7 @@ package lsp
 import (
 	"time"
 
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 type Config struct {

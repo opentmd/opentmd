@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 func (m *Model) openProviderWizard() {

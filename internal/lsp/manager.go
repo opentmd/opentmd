@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/opentmd/opentmd/internal/pathutil"
+	"github.com/opentmd/opentmd-cli/internal/pathutil"
 )
 
 type Manager struct {

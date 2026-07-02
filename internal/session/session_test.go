@@ -5,9 +5,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/opentmd/opentmd/internal/config"
-	"github.com/opentmd/opentmd/internal/llm"
-	"github.com/opentmd/opentmd/internal/session"
+	"github.com/opentmd/opentmd-cli/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/llm"
+	"github.com/opentmd/opentmd-cli/internal/session"
 )
 
 func testConfig(t *testing.T) *config.Config {

@@ -1,6 +1,6 @@
 # Hooks 系统
 
-参考 AtomCode 的 `hooks.md` 实现。支持 **JSON CC 兼容格式**的 hooks 配置。
+支持 **JSON CC 兼容格式**的 hooks 配置。
 
 ## 触发事件
 

@@ -43,5 +43,3 @@
 - `internal/semantic/symbols.go` — 符号提取与格式化
 - `internal/semantic/treesitter.go` — tree-sitter 封装
 - `internal/semantic/queries/*.scm` — 每种语言的 tree-sitter 查询
-
-参考 AtomCode `docs/atomcode/crates/atomcode-core/src/semantic/`。

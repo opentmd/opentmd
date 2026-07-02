@@ -3,7 +3,7 @@ package tui
 import (
 	"testing"
 
-	"github.com/opentmd/opentmd/internal/permission"
+	"github.com/opentmd/opentmd-cli/internal/permission"
 )
 
 func TestResolveApprovalAutoRunSkipsPrompt(t *testing.T) {

@@ -6,7 +6,7 @@
 
 ```bash
 # 远程安装（需 GitHub Release）
-curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd/master/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/install.sh | bash
 
 # 本地源码安装
 ./scripts/install.sh

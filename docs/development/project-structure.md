@@ -4,69 +4,80 @@
 
 ```
 opentmd-cli/
-├── cmd/
-│   └── opentmd/
-│       └── main.go          # CLI 入口（Cobra 框架）
-├── internal/
-│   ├── config/              # 配置读写（TOML）
-│   │   ├── config.go        # Config 结构体、读写
-│   │   ├── config_test.go   # 配置测试
-│   │   └── providers.go     # Provider 预设列表
-│   ├── llm/                 # LLM 类型与接口
-│   │   └── types.go         # Role, ToolCall, Provider 接口
-│   ├── provider/            # Provider 工厂
-│   │   └── factory.go       # New() 工厂函数
-│   ├── deepseek/            # OpenAI 兼容 HTTP 客户端
-│   │   ├── deepseek.go      # Client: Chat, Complete, SSE 解析
-│   │   └── deepseek_test.go # 客户端测试
-│   ├── agent/               # Agent 多步循环编排
-│   │   ├── agent.go         # Agent 结构体、Chat 循环
-│   │   └── prompt.go        # System prompt
-│   ├── tool/                # 工具注册与执行
-│   │   └── registry.go      # Registry: read_file, run_shell, list_dir
-│   ├── fileio/              # 文件读取
-│   │   └── read.go          # Read(), ValidatePath()
-│   ├── shell/               # Shell 命令执行
-│   │   └── exec.go          # Run(), FormatResult()
-│   ├── session/             # 会话持久化
-│   │   ├── session.go       # Store, Session, Message
-│   │   └── session_test.go  # 会话测试
-│   ├── setup/               # 首次启动向导
-│   │   └── wizard.go        # RunWizard, RunLogin, RunOAuth
-│   └── tui/                 # Bubble Tea 终端界面
-│       ├── tui.go           # Model, Update, View
-│       └── wrap.go          # 文本换行、消息样式
-├── scripts/
-│   ├── build.sh             # 编译脚本
-│   └── install.sh           # 一键安装脚本
-├── mock/
-│   └── atomcode/            # AtomCode Rust 原型项目（测试参考）
-├── docs/                    # 文档
-├── go.mod                   # Go 模块定义
-├── go.sum                   # Go 依赖锁
-└── LICENSE                  # 开源协议
+├── cmd/opentmd/              # CLI 入口（Cobra）
+│   ├── main.go               # 根命令、login、config
+│   ├── daemon.go             # daemon 子命令
+│   ├── mcp.go                # mcp 子命令
+│   └── output.go             # Headless 输出
+├── internal/                 # 内部包
+│   ├── agent/                # Agent 编排、compact
+│   ├── compaction/           # 对话压缩
+│   ├── config/               # TOML 配置
+│   ├── daemon/               # HTTP SSE 服务
+│   ├── deepseek/             # OpenAI 兼容客户端
+│   ├── hook/                 # Hooks 系统
+│   ├── llm/                  # LLM 类型与接口
+│   ├── lsp/                  # LSP 客户端
+│   ├── mcp/                  # MCP 客户端
+│   ├── memory/               # 持久记忆
+│   ├── permission/           # 权限审批
+│   ├── provider/             # Provider 工厂
+│   ├── semantic/             # tree-sitter 符号分析
+│   ├── session/              # 会话持久化
+│   ├── setup/                # 首次启动向导
+│   ├── skill/                # Skills 系统
+│   ├── tool/                 # 工具注册与执行
+│   ├── tui/                  # Bubble Tea TUI
+│   └── web/                  # web_search / web_fetch
+├── packages/npm/             # npm 分发（@opentmd/cli）
+├── extensions/vscode-opentmd/ # VS Code 扩展
+├── docker/                   # Docker 镜像
+├── scripts/                  # install / build / deploy / uninstall
+├── docs/                     # 文档中心
+│   ├── user-guide/           # 用户指南
+│   ├── architecture/         # 架构设计
+│   ├── development/          # 开发指南
+│   └── atomcode/             # AtomCode 参考实现
+├── opentmd                   # 仓库内快捷启动脚本
+├── go.mod
+└── LICENSE
 ```
 
 ## 依赖关系
 
 ```
-cmd/opentmd → internal/agent → internal/provider → internal/deepseek
-                              → internal/session
-                              → internal/tool → internal/fileio
-                                              → internal/shell
-             internal/config
-             internal/setup
-             internal/tui
+cmd/opentmd
+  └── internal/agent
+        ├── internal/tool ── internal/{fileio,shell,grep,glob,lsp,mcp,skill,...}
+        ├── internal/session
+        ├── internal/memory
+        ├── internal/compaction
+        ├── internal/hook
+        └── internal/provider ── internal/deepseek
 ```
 
-## Go 依赖
+## 脚本说明
 
-| 依赖 | 用途 |
+| 脚本 | 用途 |
 |------|------|
-| `github.com/spf13/cobra` | CLI 框架 |
-| `github.com/charmbracelet/bubbletea` | TUI 框架 |
-| `github.com/charmbracelet/bubbles` | TUI 组件（viewport, textarea, spinner） |
-| `github.com/charmbracelet/lipgloss` | 终端样式 |
-| `github.com/pelletier/go-toml/v2` | TOML 解析 |
-| `github.com/google/uuid` | 会话 ID 生成 |
-| `golang.org/x/term` | 终端检测 |
+| `scripts/install.sh` | curl / 本地安装 |
+| `scripts/uninstall.sh` | 分组卸载 |
+| `scripts/build.sh` | 编译与交叉发布 |
+| `scripts/deploy-local.sh` | 本地部署到 PATH |
+| `scripts/run-local.sh` | 仓库内 `opentmd` 启动 |
+| `packages/npm/scripts/build.sh` | npm 平台包发布 |
+
+## 配置与数据目录
+
+`~/.opentmd/` 由 `config.Ensure()` 自动创建：
+
+```
+~/.opentmd/
+├── config.toml       # 主配置
+├── mcp.json          # MCP 服务器
+├── hooks.json        # Hooks
+├── memory.md         # 全局记忆
+├── sessions/         # 会话 JSON
+├── skills/           # Skills 模板
+└── plugins/          # 插件目录
+```

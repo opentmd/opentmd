@@ -1,0 +1,25 @@
+{
+  "name": "@opentmd/cli",
+  "version": "0.0.0-dev",
+  "description": "Open-source terminal AI coding assistant — connect any LLM, edit code, run commands",
+  "keywords": ["ai", "coding", "cli", "agent", "terminal", "llm", "opentmd"],
+  "homepage": "https://github.com/opentmd/opentmd-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opentmd/opentmd-cli.git"
+  },
+  "license": "MIT",
+  "author": "OpenTMD",
+  "bin": {
+    "opentmd": "./bin/opentmd.js"
+  },
+  "files": [
+    "bin/opentmd.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

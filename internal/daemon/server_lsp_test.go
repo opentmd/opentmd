@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 func TestHandleLSPStatus(t *testing.T) {

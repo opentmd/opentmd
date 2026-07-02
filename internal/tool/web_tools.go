@@ -4,9 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/opentmd/opentmd/internal/llm"
-	"github.com/opentmd/opentmd/internal/semantic"
-	"github.com/opentmd/opentmd/internal/web"
+	"github.com/opentmd/opentmd-cli/internal/llm"
+	"github.com/opentmd/opentmd-cli/internal/semantic"
+	"github.com/opentmd/opentmd-cli/internal/web"
 )
 
 func (r *Runtime) registerWebTools() {

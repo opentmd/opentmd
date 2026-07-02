@@ -34,5 +34,3 @@
 - `internal/lsp/registry.go` — LSP 服务器注册与自动检测
 - `internal/lsp/status.go` — 状态报告
 - `internal/diagnostics/diagnostics.go` — 诊断收集
-
-参考 AtomCode `docs/atomcode/crates/atomcode-core/src/lsp/`。

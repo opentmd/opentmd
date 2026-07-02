@@ -6,103 +6,116 @@
 cd your-project && opentmd
 ```
 
-进入 TUI 交互界面：
+首次运行会进入 **3 步启动向导**（选择 Provider → 输入 API Key → 确认模型），配置保存在 `~/.opentmd/config.toml`。
 
-```
-┌─────────────────────────────────────────────┐
-│  OpenTMD — 终端 AI 编码助手                   │
-│                                              │
-│  user > 分析这个项目的结构                      │
-│  assistant > 正在分析...                      │
-│                                              │
-│  > _                                         │
-│                                              │
-└─────────────────────────────────────────────┘
-```
-
-### TUI 命令
+### TUI 斜杠命令
 
 | 命令 | 说明 |
 |------|------|
-| `/help` | 显示帮助 |
-| `/clear` | 清空当前会话 |
-| `/session` | 显示当前 session |
+| `/help` | 显示全部命令 |
+| `/keys` | 显示快捷键 |
+| `/status` | provider / 目录 / session / LSP 摘要 |
+| `/config` | 配置文件路径与摘要 |
+| `/cost` | Token 用量与估算费用 |
+| `/session` | 当前 session 信息 |
 | `/session list` | 列出历史 session |
 | `/session new` | 新建 session |
 | `/session <id>` | 切换到指定 session |
-| `/exit` | 退出 |
+| `/resume` | 恢复历史 session |
+| `/clear` | 清屏（保留对话上下文） |
+| `/undo` | 撤销上一轮文件修改 |
+| `/auto-run on/off/status` | 自动执行工具（跳过确认） |
+| `/model` `/provider` | 切换 provider / model |
+| `/login` | 配置 Provider 与 API Key |
+| `/cd <dir>` | 切换工作目录 |
+| `/reload` | 重载 config.toml |
+| `/lsp` | LSP 语言服务器状态 |
+| `/lsp reload` | 重启 LSP 客户端 |
+| `/skills` | 列出 Skills |
+| `/mcp` | MCP 服务器状态 |
+| `/mcp reload` | 重连 MCP 服务器 |
+| `/plan` `/build` | 切换只读探索 / 可执行构建模式 |
+| `/copy` | 复制最近 AI 回复 |
+| `/copy all` | 复制完整会话 |
+| `/export [file]` | 导出会话到文件 |
+| `/remember <text>` | 记忆全局事实 |
+| `/remember project <text>` | 记忆项目事实 |
+| `/forget <keyword>` | 删除匹配记忆 |
+| `/memory` | 查看所有记忆 |
+| `/compact [focus]` | LLM 摘要压缩旧对话 |
+| `/exit` `/quit` | 退出 |
+
+输入 `@` 可补全项目文件路径；输入 `/` 触发斜杠命令补全菜单。
 
 ### 快捷键
 
 | 按键 | 功能 |
 |------|------|
-| `Ctrl+C` | 退出程序 |
-| `Esc` | 清空输入框 |
-| 鼠标滚轮 | 滚动消息历史 |
+| `Enter` | 发送 |
+| `Ctrl+J` / `Alt+Enter` | 换行 |
+| `Tab` | 斜杠命令补全 |
+| `Esc` | 取消输出 / 清空输入 |
+| `Ctrl+O` | 切换工具详情显示 |
+| `Ctrl+L` | 清屏（保留对话） |
+| `Ctrl+Y` | 复制最近 AI 回复 |
+| `Ctrl+G` / `End` | 滚到最新 |
+| `Ctrl+C` | 取消；连按两次退出 |
 
-## Prompt 模式 (非交互)
+TUI 默认使用备用屏幕。若需终端内鼠标选中复制，可设 `OPENTMD_NO_ALT_SCREEN=1`。
 
-```bash
-opentmd -p "分析这个仓库"
-opentmd --prompt "解释这段代码的作用"
-```
+### 权限审批
 
-直接输出结果到 stdout，适用于管道和脚本：
+对 bash / 写文件 / MCP 等敏感操作：
 
-```bash
-opentmd -p "解释这个项目" | grep -i "feature"
-```
-
-## Agent 能力
-
-Agent 会自动循环调用工具直至任务完成：
-
-| 工具 | 说明 |
+| 按键 | 含义 |
 |------|------|
-| `read_file` | 读取本地文件（大文件自动截断） |
-| `list_dir` | 列出目录内容 |
-| `run_shell` | 执行 Shell 命令（带超时） |
+| `y` | 允许一次 |
+| `a` | 本会话允许 |
+| `n` | 拒绝 |
 
-### 使用示例
+## Headless 模式（CI / 脚本）
 
+```bash
+opentmd -C ./my-project -p "运行 go test 并总结"
+opentmd --prompt-file task.txt -v
+opentmd -c -p "继续上次的任务"
 ```
-你 > 帮我看看这个项目的入口文件在哪里
-助手 > 让我先查看一下项目结构...
-[调用 list_dir 工具]
-项目根目录包含 cmd/、internal/ 等目录。
 
-你 > 读取 main.go
-助手 > [调用 read_file 工具]
-主入口在 cmd/opentmd/main.go，使用 Cobra 框架...
+直接输出到 stdout，`-v` 将工具调用详情写入 stderr。
 
-你 > 帮我编译
-助手 > [调用 run_shell 工具: go build -o bin/opentmd ./cmd/opentmd/]
-编译成功！
+## Agent 工具
+
+Agent 自动循环调用工具直至任务完成。完整列表见 [README — Agent 工具](../../README.md#agent-工具对齐-atomcode)。
+
+典型工作流：`read/grep/glob` → `edit/write` → `bash`（测试）→ 验证 → 回复。
+
+## 持久记忆
+
+```bash
+/remember 偏好中文回复
+/remember project 使用 go test ./...
+/memory
+/forget 中文
 ```
+
+- 全局：`~/.opentmd/memory.md`
+- 项目：`<root>/.opentmd/memory.md`
+
+详见 [架构 — 持久记忆](../architecture/memory.md)。
+
+## 对话压缩
+
+长会话中上下文过大时：
+
+```bash
+/compact              # 摘要合并旧消息
+/compact auth 模块    # 聚焦某主题的摘要
+```
+
+保留最近 6 条消息，旧消息合并为 `[Previous conversation summary]` 注入会话。详见 [架构 — 对话压缩](../architecture/compaction.md)。
 
 ## 配置查看
 
 ```bash
 opentmd config
-```
-
-显示当前配置信息：
-```
-Config file: /home/user/.opentmd/config.toml
-
-  provider: deepseek
-  model:    deepseek-chat
-  theme:    dark
-  stream:   true
-  persist:  true
-  setup:    completed=true
-
-  [deepseek] (active)
-    base_url: https://api.deepseek.com
-    api_key:  set (sk-f0fc...02fc)
-
-  Available providers:
-    deepseek   DeepSeek [active]
-    openai     OpenAI [configured]
-    ...
 ```

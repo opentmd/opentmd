@@ -56,6 +56,4 @@ curl http://localhost:13456/health
 
 详情见 [Docker 部署文档](../docker/README.md)。
 
-## 实现参考
 
-参考 AtomCode `docs/atomcode/crates/atomcode-daemon/`。

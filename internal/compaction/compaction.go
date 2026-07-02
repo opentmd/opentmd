@@ -1,5 +1,4 @@
-// Package compaction compresses long session histories — ported from AtomCode's
-// manual /compact flow (simplified for OpenTMD's user/assistant-only session store).
+// Package compaction compresses long session histories.
 package compaction
 
 import (
@@ -8,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/opentmd/opentmd/internal/llm"
-	"github.com/opentmd/opentmd/internal/session"
+	"github.com/opentmd/opentmd-cli/internal/llm"
+	"github.com/opentmd/opentmd-cli/internal/session"
 )
 
 const (

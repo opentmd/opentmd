@@ -10,7 +10,7 @@ import (
 	"github.com/charmbracelet/x/ansi"
 	"github.com/mattn/go-runewidth"
 
-	"github.com/opentmd/opentmd/internal/permission"
+	"github.com/opentmd/opentmd-cli/internal/permission"
 )
 
 type displayMsg struct {

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/opentmd/opentmd/internal/trust"
+	"github.com/opentmd/opentmd-cli/internal/trust"
 )
 
 func (m *Model) initTrust(opts trust.Options) {

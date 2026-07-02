@@ -1,7 +1,5 @@
 # 权限模型 (Permission)
 
-参考 AtomCode 的 `turn/permission.rs` 和 `tool/mod.rs` 权限系统实现。
-
 ## 权限级别
 
 | 级别 | 常量 | 说明 |
@@ -47,5 +45,3 @@ mcp__* (外部 MCP 工具)                               → RequireApproval
 
 - `internal/permission/permission.go` — Store、Classify、Check、决策枚举
 - `internal/tool/runtime.go:Execute()` — 权限钩子集成
-
-参考 AtomCode `docs/atomcode/crates/atomcode-core/src/turn/permission.rs`。

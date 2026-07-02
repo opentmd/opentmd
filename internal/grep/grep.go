@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/opentmd/opentmd/internal/pathutil"
+	"github.com/opentmd/opentmd-cli/internal/pathutil"
 )
 
 type Options struct {

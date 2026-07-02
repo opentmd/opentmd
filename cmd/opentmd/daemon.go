@@ -8,11 +8,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/opentmd/opentmd/internal/cliname"
-	"github.com/opentmd/opentmd/internal/config"
-	"github.com/opentmd/opentmd/internal/daemon"
-	"github.com/opentmd/opentmd/internal/project"
-	"github.com/opentmd/opentmd/internal/trust"
+	"github.com/opentmd/opentmd-cli/internal/cliname"
+	"github.com/opentmd/opentmd-cli/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/daemon"
+	"github.com/opentmd/opentmd-cli/internal/project"
+	"github.com/opentmd/opentmd-cli/internal/trust"
 	"github.com/spf13/cobra"
 )
 

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/opentmd/opentmd/internal/llm"
+	"github.com/opentmd/opentmd-cli/internal/llm"
 )
 
 const defaultTimeout = 120 * time.Second

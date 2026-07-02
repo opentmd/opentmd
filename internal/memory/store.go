@@ -1,5 +1,4 @@
-// Package memory provides persistent memory.md storage — ported from
-// AtomCode's memory module.
+// Package memory provides persistent memory.md storage.
 //
 // Two stores:
 //   - global: ~/.opentmd/memory.md  (user preferences across projects)
@@ -15,7 +14,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 const (

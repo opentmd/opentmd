@@ -7,14 +7,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/opentmd/opentmd/internal/agent"
-	"github.com/opentmd/opentmd/internal/cliname"
-	"github.com/opentmd/opentmd/internal/config"
-	"github.com/opentmd/opentmd/internal/project"
-	"github.com/opentmd/opentmd/internal/session"
-	"github.com/opentmd/opentmd/internal/setup"
-	"github.com/opentmd/opentmd/internal/tui"
-	"github.com/opentmd/opentmd/internal/trust"
+	"github.com/opentmd/opentmd-cli/internal/agent"
+	"github.com/opentmd/opentmd-cli/internal/cliname"
+	"github.com/opentmd/opentmd-cli/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/project"
+	"github.com/opentmd/opentmd-cli/internal/session"
+	"github.com/opentmd/opentmd-cli/internal/setup"
+	"github.com/opentmd/opentmd-cli/internal/tui"
+	"github.com/opentmd/opentmd-cli/internal/trust"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
@@ -30,6 +30,9 @@ var (
 	loginProvider  string
 	loginOAuth     bool
 	trustFlag      bool
+
+	// Version is set at build time via -ldflags.
+	Version = "dev"
 )
 
 func main() {
@@ -40,10 +43,11 @@ func main() {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   cliname.Current(),
-	Short: "OpenTMD - AI coding assistant for the terminal",
-	Long:  "opentmd-cli is an open-source AI coding agent that runs in your terminal.",
-	RunE:  runDefault,
+	Use:     cliname.Current(),
+	Short:   "OpenTMD - AI coding assistant for the terminal",
+	Long:    "opentmd-cli is an open-source AI coding agent that runs in your terminal.",
+	Version: Version,
+	RunE:    runDefault,
 }
 
 func init() {

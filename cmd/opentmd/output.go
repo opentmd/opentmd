@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/opentmd/opentmd/internal/config"
+	"github.com/opentmd/opentmd-cli/internal/config"
 )
 
 func printPromptBanner(cfg *config.Config, workDir string, w io.Writer) {
