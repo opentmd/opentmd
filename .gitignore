@@ -52,6 +52,9 @@ Thumbs.db
 # Mock
 mock/
 
+# Build output
+dist/
+
 # Docs site build output
 docs/site/node_modules/
 docs/site/dist/

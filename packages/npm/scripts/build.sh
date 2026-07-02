@@ -20,7 +20,9 @@ if [ -z "$VERSION" ]; then
 fi
 
 NPM_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT="$(cd "${NPM_DIR}/../.." && pwd)"
 REPO="${OPENTMD_REPO:-opentmd/opentmd-cli}"
+LOCAL_DIST="${LOCAL_DIST:-${ROOT}/dist}"
 RELEASE_BASE="https://github.com/${REPO}/releases/download/v${TAG_VERSION}"
 WORK_DIR="$(mktemp -d)"
 trap 'rm -rf "$WORK_DIR"' EXIT
@@ -48,9 +50,12 @@ publish_platform() {
 {
   "name": "@opentmd/cli-${tag}",
   "version": "${VERSION}",
+  "description": "OpenTMD CLI binary for ${os}/${npm_cpu}",
+  "license": "MIT",
   "os": ["${os}"],
   "cpu": ["${npm_cpu}"],
-  "files": ["bin/"]
+  "files": ["bin/"],
+  "publishConfig": { "access": "public" }
 }
 EOF
 
@@ -80,6 +85,23 @@ EOF
     fi
     rm -f "$dest"
   done
+
+  if [ "$ok" -ne 1 ] && [ -d "$LOCAL_DIST" ]; then
+    local local_candidates=(
+      "${LOCAL_DIST}/opentmd_${os}_${arch}"
+      "${LOCAL_DIST}/opentmd_${TAG_VERSION}_${os}_${arch}"
+      "${LOCAL_DIST}/opentmd_${VERSION}_${os}_${arch}"
+    )
+    local local_bin
+    for local_bin in "${local_candidates[@]}"; do
+      if [ -f "$local_bin" ]; then
+        echo "  ↓ ${tag}: local ${local_bin}"
+        cp "$local_bin" "$bin"
+        ok=1
+        break
+      fi
+    done
+  fi
 
   if [ "$ok" -ne 1 ]; then
     echo "  ⚠ binary not found for ${tag}, skipping"
