@@ -135,6 +135,7 @@ build_release() {
     "linux/arm64"
     "darwin/amd64"
     "darwin/arm64"
+    "windows/amd64"
   )
 
   for target in "${targets[@]}"; do
@@ -143,6 +144,9 @@ build_release() {
     local name="opentmd_${goos}_${goarch}"
     [ "$VERSION" != "dev" ] && name="opentmd_${VERSION}_${goos}_${goarch}"
     local out="${DIST}/${name}"
+    if [ "$goos" = "windows" ]; then
+      out="${out}.exe"
+    fi
     log "  ${goos}/${goarch} → ${out}"
     CGO_ENABLED=0 GOOS="$goos" GOARCH="$goarch" go build \
       -trimpath \

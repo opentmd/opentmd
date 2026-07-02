@@ -7,10 +7,10 @@
 ### 安装
 
 ```bash
-# curl 一键安装（推荐）
+# curl 一键安装（Linux / macOS）
 curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/install.sh | bash
 
-# npm 全局安装
+# npm 全局安装（Linux / macOS / Windows）
 npm install -g @opentmd/cli
 
 # 本地源码

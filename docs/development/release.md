@@ -1,6 +1,29 @@
 # 发布指南
 
-## GitHub Release
+## GitHub Release（自动）
+
+推送 `v*` tag 后，`.github/workflows/release.yml` 自动执行：
+
+1. 交叉编译 linux / darwin / windows（amd64/arm64，Windows 仅 amd64）
+2. 创建 GitHub Release 并上传资产
+3. 使用 Environment `Configure NPM` 中的 `NPM_TOKEN` 发布 npm 包
+
+```bash
+git tag v0.1.1
+git push origin v0.1.1
+```
+
+### GitHub 环境配置
+
+在 **Settings → Environments → Configure NPM** 中添加：
+
+| 名称 | 类型 | 说明 |
+|------|------|------|
+| `NPM_TOKEN` | **Secret** | npm automation token（需 bypass 2FA 权限） |
+
+> 请使用 Secret 而非普通 Variable，避免 token 泄露。
+
+## GitHub Release（手动）
 
 ### 1. 交叉编译
 
@@ -9,7 +32,7 @@ VERSION=0.1.0 ./scripts/build.sh --release
 ls -lh dist/
 ```
 
-产物命名：`opentmd_linux_amd64`、`opentmd_linux_arm64`、`opentmd_darwin_amd64`、`opentmd_darwin_arm64`
+产物命名：`opentmd_linux_amd64`、`opentmd_linux_arm64`、`opentmd_darwin_amd64`、`opentmd_darwin_arm64`、`opentmd_windows_amd64.exe`
 
 ### 2. 打包（可选）
 
@@ -32,8 +55,9 @@ done
 | `opentmd_linux_arm64.tar.gz` | curl 安装 / npm |
 | `opentmd_darwin_amd64.tar.gz` | curl 安装 / npm |
 | `opentmd_darwin_arm64.tar.gz` | curl 安装 / npm |
+| `opentmd_windows_amd64.exe` | npm（Windows x64） |
 
-安装脚本会依次尝试多种 URL 模式，兼容裸二进制命名。
+安装脚本会依次尝试多种 URL 模式，兼容裸二进制命名。Windows 仅通过 npm 分发（curl 安装脚本不支持 Windows）。
 
 ### 4. 验证 curl 安装
 
@@ -53,19 +77,23 @@ opentmd --version
 | `@opentmd/cli-darwin-x64` | macOS Intel 二进制 |
 | `@opentmd/cli-linux-arm64` | Linux ARM64 二进制 |
 | `@opentmd/cli-linux-x64` | Linux AMD64 二进制 |
+| `@opentmd/cli-win32-x64` | Windows x64 二进制 |
 
 源码位于 `packages/npm/`。
 
 ### 发布命令
 
-需先完成 GitHub Release 上传（npm 脚本从 Release 下载二进制）：
+推送 tag 后由 GitHub Actions 自动发布。本地手动发布（需 `NPM_TOKEN`）：
 
 ```bash
+export NODE_AUTH_TOKEN="$NPM_TOKEN"
 ./packages/npm/scripts/build.sh 0.1.0
 
 # 预演
 ./packages/npm/scripts/build.sh 0.1.0 --dry-run
 ```
+
+CI 工作流在 GitHub Release 创建完成后，从 Release 资产下载二进制并发布全部 6 个 npm 包。
 
 ### 用户安装
 

@@ -23,6 +23,8 @@ jobs:
             goarch: amd64
           - goos: darwin
             goarch: arm64
+          - goos: windows
+            goarch: amd64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,23 +38,37 @@ jobs:
           check-latest: true
 
       - name: Build binary
+        env:
+          TAG_VERSION: ${{ github.ref_name }}
         run: |
+          VERSION="${TAG_VERSION#v}"
           BINARY="opentmd"
-          ARCHIVE="${BINARY}_${{ matrix.goos }}_${{ matrix.goarch }}.tar.gz"
           mkdir -p dist
-          CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
-            go build -trimpath -ldflags "-s -w" -o "dist/${BINARY}" ./cmd/opentmd/
-          cd dist
-          tar -czf "${ARCHIVE}" "${BINARY}"
-          rm -f "${BINARY}"
-          sha256sum "${ARCHIVE}" > "${ARCHIVE}.sha256"
-          echo "archive=${ARCHIVE}" >> "$GITHUB_ENV"
+
+          if [ "${{ matrix.goos }}" = "windows" ]; then
+            OUT="dist/${BINARY}_${{ matrix.goos }}_${{ matrix.goarch }}.exe"
+            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+              go build -trimpath \
+                -ldflags "-s -w -X main.Version=${VERSION}" \
+                -o "$OUT" ./cmd/opentmd/
+            sha256sum "$OUT" > "${OUT}.sha256"
+          else
+            ARCHIVE="${BINARY}_${{ matrix.goos }}_${{ matrix.goarch }}.tar.gz"
+            CGO_ENABLED=0 GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+              go build -trimpath \
+                -ldflags "-s -w -X main.Version=${VERSION}" \
+                -o "dist/${BINARY}" ./cmd/opentmd/
+            cd dist
+            tar -czf "${ARCHIVE}" "${BINARY}"
+            rm -f "${BINARY}"
+            sha256sum "${ARCHIVE}" > "${ARCHIVE}.sha256"
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/*.tar.gz*
+          path: dist/*
 
   create-release:
     name: Create Release
@@ -72,7 +88,6 @@ jobs:
       - name: Generate release notes
         id: changelog
         run: |
-          # Generate changelog from git log
           PREV_TAG=$(git tag --sort=-version:refname | head -n 2 | tail -n 1 || true)
           if [ -n "$PREV_TAG" ]; then
             NOTES=$(git log --pretty=format:"* %s (%h)" "$PREV_TAG..HEAD" 2>/dev/null || echo "Initial release")
@@ -100,14 +115,43 @@ jobs:
             | Linux | arm64 | [opentmd_linux_arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_linux_arm64.tar.gz) |
             | macOS | amd64 | [opentmd_darwin_amd64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_darwin_amd64.tar.gz) |
             | macOS | arm64 | [opentmd_darwin_arm64.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_darwin_arm64.tar.gz) |
+            | Windows | amd64 | [opentmd_windows_amd64.exe](https://github.com/${{ github.repository }}/releases/download/${{ steps.changelog.outputs.tag }}/opentmd_windows_amd64.exe) |
 
             ### 安装
 
             ```bash
+            # Linux / macOS
             curl -fsSL https://raw.githubusercontent.com/${{ github.repository }}/master/scripts/install.sh | bash
+
+            # 全平台（含 Windows）
+            npm install -g @opentmd/cli
             ```
 
             ### Changes
 
             ${{ steps.changelog.outputs.notes }}
-          files: artifacts/*/*.tar.gz*
+          files: artifacts/**/*
+
+  publish-npm:
+    name: Publish npm
+    needs: create-release
+    runs-on: ubuntu-latest
+    environment: Configure NPM
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: https://registry.npmjs.org
+
+      - name: Publish @opentmd/cli packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          OPENTMD_REPO: ${{ github.repository }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "Publishing npm packages for version ${VERSION}"
+          ./packages/npm/scripts/build.sh "${VERSION}"

@@ -14,7 +14,7 @@ npm install -g @opentmd/cli
 opentmd
 ```
 
-> npm 会自动下载匹配当前平台的预编译二进制（darwin/linux × arm64/x64）。
+> npm 会自动下载匹配当前平台的预编译二进制（darwin / linux / windows × arm64/x64）。
 
 ## 使用
 

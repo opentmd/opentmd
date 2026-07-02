@@ -4,16 +4,18 @@
 
 | 项目 | 要求 |
 |------|------|
-| 操作系统 | Linux / macOS |
-| 架构 | amd64 / arm64 |
+| 操作系统 | Linux / macOS / Windows |
+| 架构 | amd64 / arm64（Windows 仅 x64） |
 | Node.js | ≥ 18（仅 npm 安装时需要） |
 | Go | ≥ 1.22（仅源码编译时需要） |
 
 ## 安装方式
 
-### 方式一：curl 一键安装（推荐）
+### 方式一：curl 一键安装（推荐，Linux / macOS）
 
 无需预先安装 Go 或 Node.js，自动检测平台并下载 GitHub Release 预编译二进制：
+
+> Windows 用户请使用下方的 **npm 全局安装** 或 **Go 直接编译**。
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/opentmd/opentmd-cli/master/scripts/install.sh | bash
@@ -42,9 +44,15 @@ OPENTMD_INSTALL_DIR=~/.local/bin ./scripts/install.sh
 npm install -g @opentmd/cli
 ```
 
-npm 会根据 `process.platform` + `process.arch` 自动下载匹配平台的预编译二进制（通过 optionalDependencies 平台包）。
+npm 会根据 `process.platform` + `process.arch` 自动下载匹配平台的预编译二进制（通过 optionalDependencies 平台包）。支持 **Windows x64**、macOS（arm64/x64）、Linux（arm64/x64）。
 
-要求 Node.js ≥ 18。安装后直接使用：
+要求 Node.js ≥ 18。在 Git Bash、PowerShell 或 CMD 中均可使用：
+
+```powershell
+npm install -g @opentmd/cli
+```
+
+安装后直接使用：
 
 ```bash
 opentmd

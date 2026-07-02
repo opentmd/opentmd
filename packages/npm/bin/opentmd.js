@@ -14,6 +14,9 @@ const PLATFORM_PACKAGES = {
     arm64: "@opentmd/cli-linux-arm64",
     x64: "@opentmd/cli-linux-x64",
   },
+  win32: {
+    x64: "@opentmd/cli-win32-x64",
+  },
 };
 
 const os = process.platform;
@@ -23,7 +26,7 @@ const pkgName = PLATFORM_PACKAGES[os]?.[arch];
 if (!pkgName) {
   console.error(
     `Unsupported platform: ${os} ${arch}. ` +
-      "OpenTMD provides binaries for darwin (arm64/x64) and linux (arm64/x64)."
+      "OpenTMD provides binaries for darwin (arm64/x64), linux (arm64/x64), and windows (x64)."
   );
   process.exit(1);
 }
@@ -41,7 +44,8 @@ try {
   process.exit(1);
 }
 
-const binPath = path.join(pkgDir, "bin", "opentmd");
+const binName = os === "win32" ? "opentmd.exe" : "opentmd";
+const binPath = path.join(pkgDir, "bin", binName);
 
 if (!existsSync(binPath)) {
   console.error(

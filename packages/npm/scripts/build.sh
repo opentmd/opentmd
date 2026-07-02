@@ -35,14 +35,17 @@ else
 fi
 
 PLATFORMS=(
-  "darwin-arm64:darwin:arm64:arm64"
-  "darwin-x64:darwin:amd64:x64"
-  "linux-arm64:linux:arm64:arm64"
-  "linux-x64:linux:amd64:x64"
+  "darwin-arm64:darwin:arm64:arm64:opentmd"
+  "darwin-x64:darwin:amd64:x64:opentmd"
+  "linux-arm64:linux:arm64:arm64:opentmd"
+  "linux-x64:linux:amd64:x64:opentmd"
+  "win32-x64:windows:amd64:x64:opentmd.exe"
 )
 
 publish_platform() {
-  local tag="$1" os="$2" arch="$3" npm_cpu="$4"
+  local tag="$1" os="$2" arch="$3" npm_cpu="$4" bin_name="$5"
+  local npm_os="$os"
+  [ "$os" = "windows" ] && npm_os="win32"
   local dir="${WORK_DIR}/${tag}"
   mkdir -p "${dir}/bin"
 
@@ -50,9 +53,9 @@ publish_platform() {
 {
   "name": "@opentmd/cli-${tag}",
   "version": "${VERSION}",
-  "description": "OpenTMD CLI binary for ${os}/${npm_cpu}",
+  "description": "OpenTMD CLI binary for ${npm_os}/${npm_cpu}",
   "license": "MIT",
-  "os": ["${os}"],
+  "os": ["${npm_os}"],
   "cpu": ["${npm_cpu}"],
   "files": ["bin/"],
   "publishConfig": { "access": "public" }
@@ -63,8 +66,10 @@ EOF
     "${RELEASE_BASE}/opentmd_${os}_${arch}.tar.gz"
     "${RELEASE_BASE}/opentmd_${VERSION}_${os}_${arch}.tar.gz"
     "${RELEASE_BASE}/opentmd_${os}_${arch}"
+    "${RELEASE_BASE}/opentmd_${VERSION}_${os}_${arch}.exe"
+    "${RELEASE_BASE}/opentmd_${os}_${arch}.exe"
   )
-  local url dest="${dir}/artifact" bin="${dir}/bin/opentmd" ok=0
+  local url dest="${dir}/artifact" bin="${dir}/bin/${bin_name}" ok=0
 
   for url in "${urls[@]}"; do
     echo "  ↓ ${tag}: ${url}"
@@ -74,6 +79,11 @@ EOF
         rm -f "$dest"
         if [ -f "${dir}/opentmd" ]; then
           mv "${dir}/opentmd" "$bin"
+          ok=1
+          break
+        fi
+        if [ -f "${dir}/opentmd.exe" ]; then
+          mv "${dir}/opentmd.exe" "$bin"
           ok=1
           break
         fi
@@ -91,6 +101,9 @@ EOF
       "${LOCAL_DIST}/opentmd_${os}_${arch}"
       "${LOCAL_DIST}/opentmd_${TAG_VERSION}_${os}_${arch}"
       "${LOCAL_DIST}/opentmd_${VERSION}_${os}_${arch}"
+      "${LOCAL_DIST}/opentmd_${os}_${arch}.exe"
+      "${LOCAL_DIST}/opentmd_${TAG_VERSION}_${os}_${arch}.exe"
+      "${LOCAL_DIST}/opentmd_${VERSION}_${os}_${arch}.exe"
     )
     local local_bin
     for local_bin in "${local_candidates[@]}"; do
@@ -121,8 +134,8 @@ echo "Publishing @opentmd/cli v${VERSION}"
 echo ""
 
 for entry in "${PLATFORMS[@]}"; do
-  IFS=: read -r tag os arch npm_cpu <<<"$entry"
-  publish_platform "$tag" "$os" "$arch" "$npm_cpu"
+  IFS=: read -r tag os arch npm_cpu bin_name <<<"$entry"
+  publish_platform "$tag" "$os" "$arch" "$npm_cpu" "$bin_name"
 done
 
 CORE_DIR="${WORK_DIR}/core"
@@ -138,7 +151,8 @@ pkg.optionalDependencies = {
   '@opentmd/cli-darwin-arm64': '${VERSION}',
   '@opentmd/cli-darwin-x64': '${VERSION}',
   '@opentmd/cli-linux-arm64': '${VERSION}',
-  '@opentmd/cli-linux-x64': '${VERSION}'
+  '@opentmd/cli-linux-x64': '${VERSION}',
+  '@opentmd/cli-win32-x64': '${VERSION}'
 };
 fs.writeFileSync('${CORE_DIR}/package.json', JSON.stringify(pkg, null, 2) + '\n');
 "
