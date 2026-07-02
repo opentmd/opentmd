@@ -1,0 +1,21 @@
+FROM debian:bookworm-slim
+
+# Install runtime dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -r -s /bin/bash opentmd
+
+WORKDIR /home/opentmd
+
+# Copy pre-built binary
+COPY opentmd /usr/local/bin/opentmd
+RUN chmod +x /usr/local/bin/opentmd
+
+EXPOSE 13456
+
+WORKDIR /workspace
+
+ENTRYPOINT ["opentmd", "daemon", "--port", "13456"]

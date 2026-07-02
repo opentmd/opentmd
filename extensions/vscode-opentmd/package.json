@@ -1,0 +1,146 @@
+{
+  "name": "opentmd-vscode",
+  "displayName": "OpenTMD for VS Code",
+  "description": "AI coding agent powered by OpenTMD daemon",
+  "version": "0.1.0",
+  "publisher": "opentmd",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "opentmd.openChat",
+        "title": "OpenTMD: Open Chat",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "opentmd.newConversation",
+        "title": "OpenTMD: New Conversation"
+      },
+      {
+        "command": "opentmd.sendSelection",
+        "title": "OpenTMD: Ask About Selection"
+      },
+      {
+        "command": "opentmd.startDaemon",
+        "title": "OpenTMD: Start Daemon"
+      },
+      {
+        "command": "opentmd.refreshLsp",
+        "title": "OpenTMD: Refresh LSP Status",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "opentmd.reloadLsp",
+        "title": "OpenTMD: Reload LSP",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "opentmd.reloadConfig",
+        "title": "OpenTMD: Reload Config"
+      },
+      {
+        "command": "opentmd.showLspStatus",
+        "title": "OpenTMD: Show LSP Status"
+      },
+      {
+        "command": "opentmd.refreshMcp",
+        "title": "OpenTMD: Refresh MCP Status",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "opentmd.reloadMcp",
+        "title": "OpenTMD: Reload MCP",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "opentmd.showMcpStatus",
+        "title": "OpenTMD: Show MCP Status"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "opentmd",
+          "title": "OpenTMD",
+          "icon": "$(hubot)"
+        }
+      ]
+    },
+    "views": {
+      "opentmd": [
+        {
+          "type": "webview",
+          "id": "opentmd.chatView",
+          "name": "Chat"
+        },
+        {
+          "id": "opentmd.lspView",
+          "name": "LSP"
+        },
+        {
+          "id": "opentmd.mcpView",
+          "name": "MCP"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "opentmd.refreshLsp",
+          "when": "view == opentmd.lspView",
+          "group": "navigation"
+        },
+        {
+          "command": "opentmd.reloadLsp",
+          "when": "view == opentmd.lspView",
+          "group": "navigation"
+        },
+        {
+          "command": "opentmd.reloadConfig",
+          "when": "view == opentmd.lspView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "opentmd.refreshMcp",
+          "when": "view == opentmd.mcpView",
+          "group": "navigation"
+        },
+        {
+          "command": "opentmd.reloadMcp",
+          "when": "view == opentmd.mcpView",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "OpenTMD",
+      "properties": {
+        "opentmd.daemonPort": {
+          "type": "number",
+          "default": 13456,
+          "description": "OpenTMD daemon port"
+        },
+        "opentmd.binaryPath": {
+          "type": "string",
+          "default": "opentmd",
+          "description": "Path to opentmd binary"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p .",
+    "watch": "tsc -watch -p ."
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  }
+}

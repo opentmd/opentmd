@@ -1,0 +1,55 @@
+# ── Go ──────────────────────────────────────────────
+/bin/
+/dist/
+/vendor/
+/opentmd
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+coverage/
+*.coverprofile
+
+# ── VS Code extension ───────────────────────────────
+extensions/**/node_modules/
+extensions/**/out/
+extensions/**/*.vsix
+
+# ── Secrets & local config ──────────────────────────
+.env
+.env.*
+!.env.example
+*.local.toml
+
+# ── OS ──────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE / editor ────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Logs & temp ─────────────────────────────────────
+*.log
+/tmp/
+.cache/
+
+# ── User-local project files (loaded at runtime) ────
+.opentmd.user.md
+.mcp.json
+.hooks.json
+.opentmd/local/*
+!.opentmd/local/.gitkeep
+.opentmd/graph.gob
+
+# AtomCode local-scope configs (machine-specific)
+.atomcode/local/
+mock/atomcode
