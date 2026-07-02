@@ -230,7 +230,7 @@ func (m *Model) renderModal() string {
 		prefix := "  "
 		nameStyle := muted
 		if i == selected {
-			prefix = "→ "
+			prefix = sym.Arrow
 			nameStyle = active
 		}
 		line := prefix + nameStyle.Render(item.Label)
@@ -240,7 +240,7 @@ func (m *Model) renderModal() string {
 		lines = append(lines, line)
 	}
 	body := strings.Join(lines, "\n")
-	hint := m.styles.inputBar.Render("↑↓ 循环 · Enter 确认 · Esc 取消")
+	hint := m.styles.inputBar.Render(sym.Up + sym.Down + " 循环 · Enter 确认 · Esc 取消")
 	return m.renderModalBox(title, body+"\n"+hint)
 }
 
@@ -251,7 +251,7 @@ func (m *Model) renderModalBox(title, body string) string {
 	}
 	content := lipgloss.NewStyle().Bold(true).Render(title) + "\n\n" + body
 	return lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
+		Border(borderFor(termCaps)).
 		BorderForeground(m.theme.Primary).
 		Padding(1, 2).
 		Width(width).
@@ -260,7 +260,7 @@ func (m *Model) renderModalBox(title, body string) string {
 
 func (m *Model) renderModalScreen() string {
 	if !m.ready {
-		return m.styles.subtitle.Render("\n  初始化 OpenTMD…\n")
+		return sym.Normalize(m.styles.subtitle.Render("\n  初始化 OpenTMD" + sym.Ellipsis + "\n"))
 	}
 	return lipgloss.Place(
 		m.width,

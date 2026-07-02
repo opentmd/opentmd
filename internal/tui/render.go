@@ -15,6 +15,17 @@ func (m *Model) buildStatusBar() string {
 	u := m.agent.Usage()
 
 	var left []string
+
+	// ⚠ BYPASS badge — shown whenever --dangerously-skip-permissions is active.
+	if m.agent.AutoApprove() {
+		badge := lipgloss.NewStyle().
+			Background(m.theme.Warn).
+			Foreground(lipgloss.Color("0")).
+			Bold(true).
+			Render(" " + sym.Warning + " BYPASS ")
+		left = append(left, badge)
+	}
+
 	if model != "" {
 		left = append(left, model)
 	}
@@ -31,10 +42,12 @@ func (m *Model) buildStatusBar() string {
 
 	hint := ""
 	if m.busy {
-		frame := spinnerFrames[m.spinnerFrame%len(spinnerFrames)]
+		frame := sym.Spinner[m.spinnerFrame%len(sym.Spinner)]
 		hint = m.styles.busy.Render(frame + " 流式输出")
 	} else if !m.viewport.AtBottom() {
 		hint = m.styles.hint.Render("End 回到底部")
+	} else if m.lastAssistantText() != "" {
+		hint = m.styles.hint.Render("Ctrl+Y 复制")
 	}
 
 	line := m.styles.footer.Render(leftStr)
@@ -83,7 +96,7 @@ func (m *Model) buildInputArea() string {
 	if width < 20 {
 		width = 20
 	}
-	topRule := m.styles.rule.Render(strings.Repeat("─", width))
+	topRule := m.styles.rule.Render(strings.Repeat(sym.Rule, width))
 
 	var menu string
 	if m.mentionMenuVisible() {
@@ -93,7 +106,7 @@ func (m *Model) buildInputArea() string {
 	}
 
 	m.input.SetWidth(width - 4)
-	m.input.Prompt = "❯ "
+	m.input.Prompt = sym.Prompt
 	applyInputStyles(&m.input, m.theme)
 	inputView := m.input.View()
 
@@ -102,9 +115,18 @@ func (m *Model) buildInputArea() string {
 		parts = append(parts, menu)
 	}
 	parts = append(parts, topRule, inputView)
-	botRule := m.styles.rule.Render(strings.Repeat("─", width))
+	botRule := m.styles.rule.Render(strings.Repeat(sym.Rule, width))
 	parts = append(parts, botRule, m.buildStatusBar())
 	return lipgloss.JoinVertical(lipgloss.Left, parts...)
+}
+
+// logoLines is figlet "standard" for "OPEN TMD" — pure ASCII for Windows CMD.
+var logoLines = []string{
+	`  ___  ____  _____  _   _    _____ __  __ ____`,
+	` / _ \|  _ \| ____|| \ | |  |_   _||  \/  ||  _ \`,
+	`| | | || |_) |  _|  |  \| |    | | | |\/| || | | |`,
+	`| |_| ||  __/| |___ | |\  |    | | | |  | || |_| |`,
+	` \___/ |_|   |_____|_| \_|    |_| |_|  |_||____/`,
 }
 
 func (m *Model) buildWelcome() string {
@@ -112,18 +134,42 @@ func (m *Model) buildWelcome() string {
 	model := cfg.Default.Provider + "/" + cfg.Default.Model
 	cwd := collapseHome(m.agent.WorkDir())
 	w := m.contentWidth()
-
-	brand := m.styles.title.Render("◆ OpenTMD")
-	version := m.styles.subtitle.Render(appVersion + "  ·  MIT")
-
-	line1 := lipgloss.JoinHorizontal(lipgloss.Left, brand, strings.Repeat(" ", max(2, w-lipgloss.Width(brand)-lipgloss.Width(version))), version)
-	if lipgloss.Width(line1) > w {
-		line1 = brand + "\n" + version
+	h := m.viewport.Height
+	if h < 8 {
+		h = 8
 	}
 
-	bullet := m.styles.bullet.Render("∙ ")
+	var block []string
+
+	const minLogoWidth = 50
+	if w >= minLogoWidth {
+		maxLogoW := 0
+		for _, line := range logoLines {
+			if lw := lipgloss.Width(line); lw > maxLogoW {
+				maxLogoW = lw
+			}
+		}
+		pad := (w - maxLogoW) / 2
+		if pad < 0 {
+			pad = 0
+		}
+		prefix := strings.Repeat(" ", pad)
+		for _, line := range logoLines {
+			block = append(block, prefix+m.styles.title.Render(line))
+		}
+		block = append(block, "")
+	} else {
+		brand := m.styles.title.Render(sym.Diamond + "OpenTMD")
+		block = append(block, brand, "")
+	}
+
+	version := m.styles.subtitle.Render(appVersion + "  ·  MIT")
+	block = append(block, lipgloss.Place(w, lipgloss.Height(version), lipgloss.Center, lipgloss.Top, version))
+
+	bullet := m.styles.bullet.Render(sym.Bullet)
 	pathLine := bullet + m.styles.user.Render(cwd)
 	modelLine := bullet + m.styles.user.Render(model)
+	block = append(block, "", pathLine, modelLine, "")
 
 	hints := m.styles.footer.Render(strings.Join([]string{
 		"描述任务，",
@@ -134,15 +180,24 @@ func (m *Model) buildWelcome() string {
 		m.styles.hint.Render("/help"),
 		" 查看命令",
 	}, ""))
+	block = append(block, hints)
 
-	return strings.Join([]string{line1, pathLine, modelLine, "", hints}, "\n")
+	content := strings.Join(block, "\n")
+	return lipgloss.Place(
+		w,
+		h,
+		lipgloss.Center,
+		lipgloss.Center,
+		content,
+		lipgloss.WithWhitespaceChars(" "),
+	)
 }
 
 func truncatePath(path string, maxLen int) string {
 	if len(path) <= maxLen {
 		return path
 	}
-	return "…" + path[len(path)-maxLen+1:]
+	return sym.Ellipsis + path[len(path)-maxLen+len(sym.Ellipsis):]
 }
 
 func max(a, b int) int {

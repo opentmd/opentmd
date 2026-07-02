@@ -57,11 +57,15 @@ cd your-project && opentmd
 | `Esc` | 取消输出 / 清空输入 |
 | `Ctrl+O` | 切换工具详情显示 |
 | `Ctrl+L` | 清屏（保留对话） |
-| `Ctrl+Y` | 复制最近 AI 回复 |
+| `Ctrl+Y` | 复制最近 AI 回复到剪贴板 |
 | `Ctrl+G` / `End` | 滚到最新 |
 | `Ctrl+C` | 取消；连按两次退出 |
 
-TUI 默认使用备用屏幕。若需终端内鼠标选中复制，可设 `OPENTMD_NO_ALT_SCREEN=1`。
+TUI 默认使用备用屏。**复制输出**有以下方式：
+
+- `Ctrl+Y` — 复制最近一条 AI 回复；`/copy all` 复制完整会话
+- `Shift+拖拽` — 在大多数终端（xterm、GNOME Terminal、iTerm2、Windows Terminal）中绕过鼠标捕获，直接原生选中
+- 内容同时写入 `~/.opentmd/last-copy.txt`，无剪贴板环境也可得到
 
 ### 权限审批
 
@@ -72,6 +76,20 @@ TUI 默认使用备用屏幕。若需终端内鼠标选中复制，可设 `OPENT
 | `y` | 允许一次 |
 | `a` | 本会话允许 |
 | `n` | 拒绝 |
+
+**自动批准模式（跳过所有权限提示）**
+
+```bash
+opentmd -y                        # TUI 交互模式，所有工具自动批准
+opentmd -y -p "运行全量测试"          # Headless，无任何提示
+```
+
+启用 `-y` 后：
+- 所有工具调用（包括高危操作）自动允许，无需手动确认
+- TUI 状态栏显示红色 `⚠ BYPASS` 徽章
+- 隐含 `--trust`，自动信任当前工作目录
+
+> ⚠️ **警告**：该模式不拦截任何操作，仅在您信任流水线和代理内置安全约束的环境中使用。
 
 ## Headless 模式（CI / 脚本）
 

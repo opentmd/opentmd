@@ -108,9 +108,6 @@ func Ensure() error {
 			return err
 		}
 	}
-	if err := ensureGlobalInstructions(root); err != nil {
-		return err
-	}
 	if err := ensureMCPConfig(root); err != nil {
 		return err
 	}
@@ -121,15 +118,6 @@ func Ensure() error {
 		return err
 	}
 	return nil
-}
-
-func ensureGlobalInstructions(root string) error {
-	path := filepath.Join(root, "OPENTMD.md")
-	if _, err := os.Stat(path); err == nil {
-		return nil
-	}
-	example := "# OpenTMD Global Instructions\n\n# 在此填写跨项目的个人偏好，例如：\n# - 回复使用中文\n# - 优先 Go 语言风格\n"
-	return os.WriteFile(path, []byte(example), 0o644)
 }
 
 func ensureMCPConfig(root string) error {

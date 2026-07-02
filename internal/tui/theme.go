@@ -21,7 +21,7 @@ type Theme struct {
 	ReverseBG  lipgloss.Color
 }
 
-const appVersion = "0.1.2"
+const appVersion = "0.1.3"
 
 func loadTheme(name string) Theme {
 	if name == "light" {
@@ -126,5 +126,3 @@ type themeStyles struct {
 	success, error, code, codeInline, toolHeader, inputBar, rule lipgloss.Style
 	menuActive, menuInactive, menuDesc, bullet lipgloss.Style
 }
-
-var spinnerFrames = []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}

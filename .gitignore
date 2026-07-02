@@ -58,5 +58,4 @@ mock/
 # Docs site build output
 docs/site/node_modules/
 docs/site/dist/
-.opentmd.md
 .atomcode/

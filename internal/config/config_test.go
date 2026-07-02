@@ -17,7 +17,7 @@ func TestEnsureCreatesLayout(t *testing.T) {
 	}
 
 	root := filepath.Join(dir, ".opentmd")
-	for _, name := range []string{"config.toml", "sessions", "plugins", "skills", "mcp.json", "hooks.json", "OPENTMD.md"} {
+	for _, name := range []string{"config.toml", "sessions", "plugins", "skills", "mcp.json", "hooks.json"} {
 		path := filepath.Join(root, name)
 		if _, err := os.Stat(path); err != nil {
 			t.Fatalf("expected %s to exist: %v", path, err)

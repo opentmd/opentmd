@@ -82,7 +82,7 @@ type ProviderConfig struct {
 ```bash
 ~/.opentmd/
 ├── config.toml     # 主配置
-├── OPENTMD.md      # 全局指令（注入 system prompt）
+├── OPENTMD.md      # 全局指令（可选，注入 system prompt）
 ├── mcp.json        # MCP 服务器配置
 ├── hooks.json      # Hooks 配置
 ├── sessions/       # 会话存储
@@ -98,7 +98,7 @@ type ProviderConfig struct {
 
 ```bash
 <project>/
-├── .opentmd.md              # 项目指令（优先于 OPENTMD.md 等同名文件）
+├── OPENTMD.md               # 项目指令（可选，大小写不敏感）
 ├── .opentmd.user.md         # 个人指令（gitignore，不提交）
 ├── .mcp.json                # 项目 MCP（可选，gitignore）
 ├── .hooks.json              # 项目 Hooks（可选，gitignore）
@@ -114,7 +114,7 @@ type ProviderConfig struct {
 
 | 类型 | 全局 | 项目 |
 |------|------|------|
-| 指令 | `~/.opentmd/OPENTMD.md` | `.opentmd.md` / `OPENTMD.md` / `CLAUDE.md` 等 |
+| 指令 | `~/.opentmd/OPENTMD.md`（可选） | `OPENTMD.md` / `CLAUDE.md`（大小写不敏感，可选） |
 | Skills | `~/.opentmd/skills/` | `.opentmd/skills/`（含上级目录） |
 | MCP | `~/.opentmd/mcp.json` | `.mcp.json` 或 `.opentmd/mcp.json` |
 | Hooks | `~/.opentmd/hooks.json` | `.hooks.json` 或 `.opentmd/hooks.json` |

@@ -19,6 +19,7 @@ opentmd [command]
 | `--model` | | 临时覆盖模型 |
 | `--provider` | | 临时覆盖 Provider |
 | `--trust` | | 信任当前工作目录（跳过确认） |
+| `--dangerously-skip-permissions` | `-y` | 自动允许所有工具调用（bash、文件编辑、MCP 等）无需提示，TUI 显示红色 ⚠ BYPASS 徽章。适用于 CI/CD 、评测场景 |
 | `--version` | | 显示版本号 |
 | `--help` | `-h` | 显示帮助 |
 
@@ -104,6 +105,10 @@ opentmd --prompt-file task.txt -v
 
 # 继续上次对话
 opentmd -c
+
+# CI/CD 或评测：自动批准所有工具调用
+opentmd -y -p "运行全量测试并生成覆盖率报告"
+opentmd -y --prompt-file ci-task.txt
 
 # Daemon + API 探测
 opentmd daemon --port 13456 &

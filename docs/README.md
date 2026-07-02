@@ -58,7 +58,7 @@
 
 | 文档 | 说明 |
 |------|------|
-| [项目指令](.opentmd.md) | 技术栈、目录结构、规范 |
+| [项目指令](../OPENTMD.md) | 技术栈、目录结构、规范（`OPENTMD.md`） |
 | [项目结构](development/project-structure.md) | 目录布局 |
 | [构建指南](development/build.md) | 编译与部署 |
 | [发布指南](development/release.md) | GitHub Release + npm |

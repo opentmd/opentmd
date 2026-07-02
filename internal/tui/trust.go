@@ -47,7 +47,7 @@ func (m *Model) renderTrustBox(workDir string, selected int) string {
 		width = 40
 	}
 
-	title := "⚠ Workspace Trust Required"
+	title := sym.Warning + " Workspace Trust Required"
 	body := strings.Join([]string{
 		"",
 		"OpenTMD can execute code and access files in this directory.",
@@ -58,11 +58,11 @@ func (m *Model) renderTrustBox(workDir string, selected int) string {
 		"",
 	}, "\n")
 
-	trustLine := "  ▶ [a] Trust this workspace"
+	trustLine := "  > [a] Trust this workspace"
 	quitLine := "    [q] Quit"
 	if selected == 1 {
 		trustLine = "    [a] Trust this workspace"
-		quitLine = "  ▶ [q] Quit"
+		quitLine = "  > [q] Quit"
 	}
 	footer := strings.Join([]string{
 		trustLine,
@@ -74,7 +74,7 @@ func (m *Model) renderTrustBox(workDir string, selected int) string {
 	content := title + "\n" + body + footer
 	return lipgloss.NewStyle().
 		Foreground(m.theme.Warn).
-		Border(lipgloss.RoundedBorder()).
+		Border(borderFor(termCaps)).
 		BorderForeground(m.theme.Warn).
 		Padding(1, 2).
 		Width(width).
@@ -83,7 +83,7 @@ func (m *Model) renderTrustBox(workDir string, selected int) string {
 
 func (m *Model) renderTrustScreen() string {
 	if !m.ready {
-		return m.styles.subtitle.Render("\n  初始化 OpenTMD…\n")
+		return sym.Normalize(m.styles.subtitle.Render("\n  初始化 OpenTMD" + sym.Ellipsis + "\n"))
 	}
 	box := m.trustShowMsg
 	if box == "" {

@@ -1,0 +1,49 @@
+name: Publish VS Code Extension
+
+on:
+  push:
+    tags:
+      - 'vscode-v*'
+
+jobs:
+  publish:
+    name: Package & Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          cd extensions/vscode-opentmd
+          npm ci
+
+      - name: Compile
+        run: |
+          cd extensions/vscode-opentmd
+          npm run compile
+
+      - name: Package (.vsix)
+        run: |
+          cd extensions/vscode-opentmd
+          npx @vscode/vsce package -o opentmd-vscode-${{ github.ref_name }}.vsix
+
+      - name: Upload .vsix as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix
+          path: extensions/vscode-opentmd/*.vsix
+
+      - name: Publish to Marketplace
+        run: |
+          cd extensions/vscode-opentmd
+          npx @vscode/vsce publish
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}

@@ -1,0 +1,79 @@
+# OpenTMD-Cli 项目指令
+
+> 本文件为项目级 AI 协作约定，进入工作区后自动注入 system prompt（与 Claude 的 `CLAUDE.md` 相同机制）。
+> 文件名支持大小写变体（如 `opentmd.md`）；可选，不存在时跳过。
+
+## 技术栈
+
+- **语言**: Go 1.22+
+- **CLI 框架**: [Cobra](https://github.com/spf13/cobra)
+- **TUI 框架**: [Bubble Tea](https://github.com/charmbracelet/bubbletea) + [Lip Gloss](https://github.com/charmbracelet/lipgloss)
+- **配置格式**: TOML (via [go-toml/v2](https://github.com/pelletier/go-toml))
+- **语义分析**: [go-tree-sitter](https://github.com/smacker/go-tree-sitter)
+- **分发**: GitHub Release（curl）+ npm（`@opentmd/cli`）
+- **构建**: `CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -X main.Version=..."`
+
+## 目录结构
+
+```
+cmd/opentmd/           — CLI 入口（Cobra 命令树）
+internal/
+  agent/               — Agent 编排（含 compact.go）
+  compaction/          — 对话压缩
+  config/              — TOML 配置
+  daemon/              — HTTP Daemon（SSE）
+  memory/              — 持久记忆（memory.md）
+  mcp/                 — MCP 客户端
+  lsp/                 — LSP 客户端
+  session/             — 会话持久化
+  tool/                — 工具注册与执行
+  tui/                 — Bubble Tea TUI
+  ...                  — 其他内部包
+packages/npm/          — npm 分发（@opentmd/cli）
+extensions/            — VS Code 扩展
+docker/                — Docker 部署
+scripts/               — install / build / deploy / uninstall
+docs/                  — 文档中心
+```
+
+## 安装与分发
+
+```bash
+# curl 一键安装（Linux / macOS）
+curl -fsSL .../scripts/install.sh | bash
+
+# npm 全局安装（全平台）
+npm install -g @opentmd/cli
+
+# 本地开发
+./scripts/build.sh
+./opentmd --help
+```
+
+发布流程见 [docs/development/release.md](docs/development/release.md)。
+
+## 构建与测试
+
+```bash
+./scripts/build.sh              # 构建 → bin/opentmd
+./scripts/build.sh --test       # 测试 + 构建
+VERSION=0.1.0 ./scripts/build.sh --release   # 交叉编译
+go test ./...
+```
+
+## 文档维护
+
+新增功能需同步更新：
+
+- `README.md` — 用户可见能力概览
+- `docs/user-guide/` — 安装、使用、命令
+- `docs/architecture/` — 架构设计
+- `docs/development/` — 构建与发布
+
+## 代码规范
+
+- 包名小写、无下划线
+- 错误处理优先（不忽略 err）
+- 工具 Handler 签名: `func(ctx context.Context, args json.RawMessage) (string, error)`
+- 使用 `json:"snake_case"` 标签
+- CLI 命令统一为 `opentmd`（不使用 `tmd` 短名）

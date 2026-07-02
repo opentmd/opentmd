@@ -62,6 +62,19 @@ publish_platform() {
 }
 EOF
 
+  cat >"${dir}/README.md" <<EOF
+# @opentmd/cli-${tag}
+
+OpenTMD CLI native binary for **${npm_os}/${npm_cpu}**.
+
+This package is an internal dependency of [@opentmd/cli](https://www.npmjs.com/package/@opentmd/cli). 
+You should not install it directly — install the main package instead:
+
+\`\`\`bash
+npm install -g @opentmd/cli
+\`\`\`
+EOF
+
   local urls=(
     "${RELEASE_BASE}/opentmd_${os}_${arch}.tar.gz"
     "${RELEASE_BASE}/opentmd_${VERSION}_${os}_${arch}.tar.gz"
@@ -141,6 +154,7 @@ done
 CORE_DIR="${WORK_DIR}/core"
 mkdir -p "${CORE_DIR}/bin"
 cp "${NPM_DIR}/package.json" "${CORE_DIR}/"
+cp "${NPM_DIR}/README.md" "${CORE_DIR}/"
 cp "${NPM_DIR}/bin/opentmd.js" "${CORE_DIR}/bin/"
 
 node -e "

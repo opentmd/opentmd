@@ -10,26 +10,32 @@ import (
 
 const maxInstructionBytes = 1 << 20
 
-var projectFiles = []string{
-	".opentmd.md", "OPENTMD.md",
-	".atomcode.md", "ATOMCODE.md",
-	"CLAUDE.md", "claude.md",
+// Instruction file names in priority order (Claude-compatible fallbacks last).
+var instructionNames = []string{
+	"OPENTMD.md",
+	"CLAUDE.md",
+	".atomcode.md",
+	"ATOMCODE.md",
+}
+
+var instructionNameRank = map[string]int{
+	"opentmd.md":   0,
+	"claude.md":    1,
+	".atomcode.md": 2,
+	"atomcode.md":  3,
 }
 
 func LoadContext(workDir string) string {
 	var sections []string
 
 	if cfgDir, err := config.Dir(); err == nil {
-		if s := readFile(filepath.Join(cfgDir, "OPENTMD.md")); s != "" {
-			sections = append(sections, "## Global Instructions\n"+s)
+		if name, content := findInstructions(cfgDir); content != "" {
+			sections = append(sections, "## Global Instructions ("+name+")\n"+content)
 		}
 	}
 
-	for _, name := range projectFiles {
-		if s := readFile(filepath.Join(workDir, name)); s != "" {
-			sections = append(sections, "## Project Instructions ("+name+")\n"+s)
-			break
-		}
+	if name, content := findInstructions(workDir); content != "" {
+		sections = append(sections, "## Project Instructions ("+name+")\n"+content)
 	}
 
 	if s := readFile(filepath.Join(workDir, ".opentmd.user.md")); s != "" {
@@ -40,6 +46,49 @@ func LoadContext(workDir string) string {
 		return ""
 	}
 	return strings.Join(sections, "\n\n")
+}
+
+// findInstructions locates an instruction markdown file in dir.
+// OPENTMD.md is preferred; names are matched case-insensitively on disk.
+// Returns the file name (not full path) and trimmed content.
+func findInstructions(dir string) (string, string) {
+	for _, name := range instructionNames {
+		path := filepath.Join(dir, name)
+		if content := readFile(path); content != "" {
+			return name, content
+		}
+	}
+
+	path, name := findInstructionsCaseInsensitive(dir)
+	if path == "" {
+		return "", ""
+	}
+	return name, readFile(path)
+}
+
+func findInstructionsCaseInsensitive(dir string) (path, name string) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return "", ""
+	}
+
+	bestRank := -1
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		base := entry.Name()
+		rank, ok := instructionNameRank[strings.ToLower(base)]
+		if !ok {
+			continue
+		}
+		if bestRank == -1 || rank < bestRank {
+			bestRank = rank
+			name = base
+			path = filepath.Join(dir, base)
+		}
+	}
+	return path, name
 }
 
 func DetectStack(workDir string) string {

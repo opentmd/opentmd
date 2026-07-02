@@ -81,6 +81,11 @@ func (a *Agent) SetApprovalHandler(h permission.Handler) {
 	a.tools.SetApprovalHandler(h)
 }
 
+// AutoApprove reports whether all tool calls are approved without user prompts.
+func (a *Agent) AutoApprove() bool {
+	return a.opts.AutoApprove
+}
+
 type StreamHandler func(chunk string) error
 type StatusHandler func(status string)
 

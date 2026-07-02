@@ -124,9 +124,9 @@ func splitLongWord(word string, width int) []string {
 
 func (m *Model) showApproval(req permission.Request) {
 	m.approvalPending = &req
-	title := "⚠ 需要权限审批"
+	title := sym.Warning + " 需要权限审批"
 	if req.Reason != "" {
-		title = "⚠ " + req.Reason
+		title = sym.Warning + " " + req.Reason
 	}
 	body := fmt.Sprintf(
 		"工具: %s\n参数: %s\n\n[y/Y] 允许一次   [a/A] 本会话允许   [n/N] 拒绝",
@@ -135,7 +135,7 @@ func (m *Model) showApproval(req permission.Request) {
 	)
 	box := lipgloss.NewStyle().
 		Foreground(m.theme.Warn).
-		Border(lipgloss.RoundedBorder()).
+		Border(borderFor(termCaps)).
 		BorderForeground(m.theme.Warn).
 		Padding(0, 1).
 		Width(min(m.width-6, 72)).
@@ -171,7 +171,7 @@ func truncate(s string, n int) string {
 	if len(s) <= n {
 		return s
 	}
-	return s[:n] + "…"
+	return s[:n] + sym.Ellipsis
 }
 
 func (m *Model) renderMessages(contentWidth int) string {
@@ -205,7 +205,7 @@ func (m *Model) renderMessages(contentWidth int) string {
 }
 
 func (m *Model) renderUserEcho(text string, width int) string {
-	chev := m.styles.userChevron.Render("❯ ")
+	chev := m.styles.userChevron.Render(sym.Prompt)
 	body := wrapPlainText(text, width-2)
 	var lines []string
 	for i, line := range strings.Split(body, "\n") {
@@ -244,18 +244,18 @@ func (m *Model) renderToolGroup(lines []string, contentWidth int) string {
 		return ""
 	}
 	if !m.verbose {
-		return m.styles.toolHeader.Render(fmt.Sprintf("● %d 个工具步骤", len(cleaned)))
+		return m.styles.toolHeader.Render(fmt.Sprintf("%s %d 个工具步骤", sym.Marker, len(cleaned)))
 	}
 	var out []string
 	for _, line := range cleaned {
-		line = strings.TrimPrefix(line, "▸ ")
+		line = strings.TrimPrefix(line, sym.Arrow)
 		parts := strings.SplitN(line, " ", 2)
 		name := parts[0]
 		detail := ""
 		if len(parts) > 1 {
 			detail = parts[1]
 		}
-		row := m.styles.toolBullet.Render("● ") + lipgloss.NewStyle().Bold(true).Render(name)
+		row := m.styles.toolBullet.Render(sym.Marker+" ") + lipgloss.NewStyle().Bold(true).Render(name)
 		if detail != "" {
 			row += " " + m.styles.toolHeader.Render(detail)
 		}
@@ -270,13 +270,13 @@ func (m *Model) renderOneMessage(msg displayMsg, contentWidth, idx, lastAI int) 
 		return m.renderUserEcho(msg.text, contentWidth)
 	case "assistant":
 		if strings.TrimSpace(msg.text) == "" && m.busy {
-			frame := spinnerFrames[m.spinnerFrame%len(spinnerFrames)]
-			return m.styles.footer.Render("  " + frame + " …")
+			frame := sym.Spinner[m.spinnerFrame%len(sym.Spinner)]
+			return m.styles.footer.Render("  " + frame + " " + sym.Ellipsis)
 		}
 		text := msg.text
 		streaming := m.busy && idx == lastAI
 		if streaming && text != "" {
-			text += "▌"
+			text += sym.Cursor
 		}
 		return m.renderAssistant(text, contentWidth, !streaming)
 	case "tool":
@@ -291,9 +291,9 @@ func (m *Model) renderOneMessage(msg displayMsg, contentWidth, idx, lastAI int) 
 func (m *Model) renderSystem(text string, contentWidth int) string {
 	wrapped := wrapPlainText(text, contentWidth)
 	switch {
-	case strings.HasPrefix(text, "✓"):
+	case strings.HasPrefix(text, sym.Check), strings.HasPrefix(text, "✓"):
 		return m.styles.success.Render(wrapped)
-	case strings.HasPrefix(text, "✗"):
+	case strings.HasPrefix(text, sym.Cross), strings.HasPrefix(text, "✗"):
 		return m.styles.error.Render(wrapped)
 	case strings.HasPrefix(text, "⏹"):
 		return m.styles.warn.Render(wrapped)

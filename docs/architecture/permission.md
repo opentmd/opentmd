@@ -41,6 +41,22 @@ mcp__* (外部 MCP 工具)                               → RequireApproval
     └─ RequireApprovalAlways → 请求用户审批（不受 session grant 绕过）
 ```
 
+## 跳过所有权限 (--dangerously-skip-permissions)
+
+```bash
+opentmd -y                   # 交互 TUI，所有工具自动批准
+opentmd -y -p "运行测试"     # Headless，无任何提示
+```
+
+传入 `-y` / `--dangerously-skip-permissions` 时：
+
+- 工具运行时的 `OnApproval` 替换为 `permission.AutoHandler()`，对所有请求（包括 `RequireApprovalAlways`）返回 `AllowOnce`
+- TUI 不安装交互式审批处理器，保留自动处理器
+- TUI 状态栏显示红色 `⚠ BYPASS` 徽章
+- 同时隐含 `--trust`，自动信任工作区
+
+> 适用场景：CI/CD 流水线、自动化评测框架、完全可信的本地沙箱环境。
+
 ## 实现
 
 - `internal/permission/permission.go` — Store、Classify、Check、决策枚举

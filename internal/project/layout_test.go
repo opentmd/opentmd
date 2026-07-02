@@ -23,27 +23,7 @@ func TestEnsureCreatesProjectLayout(t *testing.T) {
 		}
 	}
 
-	if _, err := os.Stat(filepath.Join(dir, ".opentmd.md")); err != nil {
-		t.Fatalf("expected .opentmd.md starter: %v", err)
-	}
-}
-
-func TestEnsureDoesNotOverwriteExistingInstructions(t *testing.T) {
-	dir := t.TempDir()
-	path := filepath.Join(dir, ".opentmd.md")
-	const content = "# Custom\n\nkeep me"
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
-		t.Fatal(err)
-	}
-
-	if err := project.Ensure(dir); err != nil {
-		t.Fatalf("ensure: %v", err)
-	}
-	data, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if string(data) != content {
-		t.Fatalf("instructions overwritten: %q", data)
+	if _, err := os.Stat(filepath.Join(dir, "OPENTMD.md")); err == nil {
+		t.Fatal("OPENTMD.md should not be auto-created")
 	}
 }

@@ -97,6 +97,8 @@ npm uninstall -g @opentmd/cli   # npm 用户
 | `--prompt-file` | 从文件读取 prompt |
 | `-v, --verbose` | 工具调用输出到 stderr |
 | `--model` `--provider` | 临时覆盖配置 |
+| `--trust` | 信任当前工作目录（跳过确认） |
+| `-y, --dangerously-skip-permissions` | 自动允许所有工具调用，TUI 显示红色 ⚠ BYPASS 徽章。适用于 CI/CD 或评测场景 |
 | `--version` | 显示版本 |
 
 ## 文档

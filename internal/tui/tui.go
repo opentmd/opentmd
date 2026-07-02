@@ -122,13 +122,13 @@ func New(ag *agent.Agent, opts trust.Options) Model {
 	styles := theme.styles()
 
 	ta := textarea.New()
-	ta.Placeholder = "描述任务…  (/help  /provider  /login)"
+	ta.Placeholder = "描述任务" + sym.Ellipsis + "  (/help  /provider  /login)"
 	ta.Focus()
 	ta.CharLimit = 4096
 	ta.SetWidth(60)
 	ta.SetHeight(1)
 	ta.ShowLineNumbers = false
-	ta.Prompt = "❯ "
+	ta.Prompt = sym.Prompt
 	applyInputStyles(&ta, theme)
 
 	vp := viewport.New(80, 20)
@@ -356,20 +356,20 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.trustPending {
-		return m.renderTrustScreen()
+		return sym.Normalize(m.renderTrustScreen())
 	}
 	if m.modalActive() {
-		return m.renderModalScreen()
+		return sym.Normalize(m.renderModalScreen())
 	}
 	if !m.ready {
-		return m.styles.subtitle.Render("\n  初始化 OpenTMD…\n")
+		return sym.Normalize(m.styles.subtitle.Render("\n  初始化 OpenTMD" + sym.Ellipsis + "\n"))
 	}
 
 	parts := []string{m.viewport.View(), m.buildInputArea()}
 	if footer := m.buildFooter(); footer != "" {
 		parts = append(parts, footer)
 	}
-	return lipgloss.JoinVertical(lipgloss.Left, parts...)
+	return sym.Normalize(lipgloss.JoinVertical(lipgloss.Left, parts...))
 }
 
 func (m *Model) clearScreen() {
@@ -517,7 +517,7 @@ func (m *Model) handleSlash(input string) (tea.Model, tea.Cmd) {
 			"  Ctrl+G / End   滚到最新",
 			"  Ctrl+C         取消；连按两次退出",
 			"",
-			"提示: SSH 无图形环境时可用鼠标选中终端历史输出；/copy 会写入 ~/.opentmd/last-copy.txt",
+			"提示: Ctrl+Y 或 /copy 复制最近 AI 输出；Shift+拖拽 可在大多数终端中直接选中文字；内容同时写入 ~/.opentmd/last-copy.txt",
 			"",
 			"权限:  y/Y 允许  a/A 会话允许  n/N 拒绝",
 		}, "\n"))
@@ -975,19 +975,27 @@ func (m Model) runCompact(ctx context.Context, focus string) tea.Cmd {
 
 func Run(ag *agent.Agent, trustOpts trust.Options) error {
 	defer ag.Shutdown()
+	InitTerminal()
 
 	approvalCh := make(chan permission.Decision, 1)
 	m := New(ag, trustOpts)
 	m.approvalCh = approvalCh
 
-	opts := []tea.ProgramOption{tea.WithMouseAllMotion()}
+	// WithMouseCellMotion enables wheel scrolling while allowing Shift+drag
+	// native text selection in most terminal emulators.
+	opts := []tea.ProgramOption{tea.WithMouseCellMotion()}
 	if useAltScreen() {
 		opts = append(opts, tea.WithAltScreen())
 	}
 	p := tea.NewProgram(&m, opts...)
 	m.program = p
 
-	ag.SetApprovalHandler(m.resolveApproval)
+	// Only install the interactive approval handler when --dangerously-skip-permissions
+	// is NOT active; otherwise the auto-approve handler set during agent construction
+	// must remain in place so that all tool calls are approved without prompting.
+	if !ag.AutoApprove() {
+		ag.SetApprovalHandler(m.resolveApproval)
+	}
 	ag.SetLSPEventHandler(func(ev lsp.ConnectEvent) {
 		if m.program != nil {
 			m.program.Send(lspConnectMsg{ev: ev})

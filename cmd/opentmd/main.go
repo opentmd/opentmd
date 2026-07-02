@@ -20,16 +20,17 @@ import (
 )
 
 var (
-	promptFlag     string
-	promptFileFlag string
-	dirFlag        string
-	continueFlag   bool
-	verboseFlag    bool
-	modelFlag      string
-	providerFlag   string
-	loginProvider  string
-	loginOAuth     bool
-	trustFlag      bool
+	promptFlag              string
+	promptFileFlag          string
+	dirFlag                 string
+	continueFlag            bool
+	verboseFlag             bool
+	modelFlag               string
+	providerFlag            string
+	loginProvider           string
+	loginOAuth              bool
+	trustFlag               bool
+	skipPermissionsFlag     bool
 
 	// Version is set at build time via -ldflags.
 	Version = "dev"
@@ -62,6 +63,10 @@ func init() {
 	rootCmd.Flags().StringVar(&modelFlag, "model", "", "Override model for this run")
 	rootCmd.Flags().StringVar(&providerFlag, "provider", "", "Override provider for this run")
 	rootCmd.Flags().BoolVar(&trustFlag, "trust", false, "Trust this workspace without prompting")
+	rootCmd.Flags().BoolVarP(&skipPermissionsFlag, "dangerously-skip-permissions", "y", false,
+		"Auto-approve every tool call (bash, file edits, MCP, etc.) without prompting. "+
+			"The TUI shows a red \u26a0 BYPASS badge while active. "+
+			"For use in CI/CD, eval harnesses, or when you trust the agent's built-in safety constraints.")
 	rootCmd.AddCommand(loginCmd)
 	rootCmd.AddCommand(configCmd)
 	rootCmd.AddCommand(mcpCmd)
@@ -111,7 +116,7 @@ func runDefault(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("init session: %w", err)
 	}
 
-	opts := agent.Options{WorkDir: workDir, Verbose: verboseFlag}
+	opts := agent.Options{WorkDir: workDir, Verbose: verboseFlag, AutoApprove: skipPermissionsFlag}
 
 	if prompt != "" {
 		return runPromptMode(cfg, sess, prompt, opts, trustOpts)
@@ -128,7 +133,7 @@ func runDefault(cmd *cobra.Command, args []string) error {
 func trustOptions() trust.Options {
 	return trust.Options{
 		Skip:      os.Getenv("OPENTMD_SKIP_TRUST") == "1",
-		AutoTrust: trustFlag,
+		AutoTrust: trustFlag || skipPermissionsFlag,
 	}
 }
 

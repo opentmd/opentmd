@@ -128,6 +128,18 @@ opentmd login --oauth             # OAuth（即将上线）
 | `OPENTMD_NO_ALT_SCREEN` | 设为 `1` 禁用 TUI 备用屏幕（便于终端内选中复制） |
 | `DEEPSEEK_API_KEY` 等 | 部分 Provider 支持从环境变量读取 API Key |
 
+## 项目指令（OPENTMD.md）
+
+与 Claude 的 `CLAUDE.md` 相同，可在项目根目录放置 `OPENTMD.md`，OpenTMD 启动时自动注入 system prompt。
+
+- **文件名**：`OPENTMD.md`（大小写不敏感，如 `opentmd.md` 也可）
+- **可选**：没有该文件时跳过，不会自动创建
+- **兼容**：若不存在 `OPENTMD.md`，会回退读取 `CLAUDE.md`
+- **全局**：`~/.opentmd/OPENTMD.md` 对所有项目生效（同样可选）
+- **个人**：`.opentmd.user.md` 仅本地生效（已 gitignore）
+
+示例内容：技术栈、目录结构、代码风格、常用构建命令等。
+
 ## 数据目录
 
 `~/.opentmd/` 结构见 [项目结构 — 配置与数据目录](../development/project-structure.md#配置与数据目录)。
